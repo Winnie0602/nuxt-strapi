@@ -372,6 +372,7 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
 export interface ApiVocabularyVocabulary extends Struct.CollectionTypeSchema {
   collectionName: 'vocabularies';
   info: {
+    description: '';
     displayName: 'Vocabulary';
     pluralName: 'vocabularies';
     singularName: 'vocabulary';
@@ -383,23 +384,32 @@ export interface ApiVocabularyVocabulary extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    example_1: Schema.Attribute.Text;
+    example_1: Schema.Attribute.String;
     example_2: Schema.Attribute.String;
+    full_reading: Schema.Attribute.String;
+    full_word_jp: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    html_hiragana: Schema.Attribute.RichText;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::vocabulary.vocabulary'
     > &
       Schema.Attribute.Private;
-    name_jp: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
+    masu_form: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    test_hanji: Schema.Attribute.String;
+    test_hiragana: Schema.Attribute.String;
     translate_ch: Schema.Attribute.String & Schema.Attribute.Required;
     type: Schema.Attribute.Enumeration<['noun', 'adj', 'verb', 'adv']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    users_favorited_by: Schema.Attribute.Relation<
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -858,7 +868,6 @@ export interface PluginUsersPermissionsUser
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -872,6 +881,10 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    favorites: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::vocabulary.vocabulary'
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

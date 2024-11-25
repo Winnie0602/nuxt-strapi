@@ -1,3 +1,11 @@
 <template>
-  <div>layout1111111: <slot /></div>
+  <div>
+    <NavBar class="" />
+    <div class="bg-white">
+      <slot />
+    </div>
+    <!-- <GoTop />
+    <Footer />
+    <MobileDownloadApp /> -->
+  </div>
 </template>

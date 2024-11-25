@@ -6,18 +6,14 @@ const { data } = await find('vocabularies')
 // const aaa = await findOne('vocabularies', '5')
 
 // POST
-const onSubmit = async () => {
-  await create('vocabularies', {
-    name_jp: 'My restaurant2',
-    translate_ch: '1232',
-  })
-}
+// const onSubmit = async () => {
+//   await create('vocabularies', {
+//     name_jp: 'My restaurant2',
+//     translate_ch: '1232',
+//   })
+// }
 </script>
 
 <template>
-  <div>
-    <div>q</div>
-    {{ data }}
-    <button @click="onSubmit">click</button>
-  </div>
+  <div class="text-red-500">123</div>
 </template>

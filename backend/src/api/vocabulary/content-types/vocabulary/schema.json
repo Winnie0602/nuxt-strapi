@@ -4,22 +4,14 @@
   "info": {
     "singularName": "vocabulary",
     "pluralName": "vocabularies",
-    "displayName": "Vocabulary"
+    "displayName": "Vocabulary",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "name_jp": {
-      "type": "string",
-      "required": true,
-      "unique": true
-    },
-    "translate_ch": {
-      "type": "string",
-      "required": true
-    },
     "type": {
       "type": "enumeration",
       "enum": [
@@ -30,9 +22,39 @@
       ]
     },
     "example_1": {
-      "type": "text"
+      "type": "string"
     },
     "example_2": {
+      "type": "string"
+    },
+    "users_favorited_by": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "favorites"
+    },
+    "translate_ch": {
+      "type": "string",
+      "required": true
+    },
+    "html_hiragana": {
+      "type": "richtext"
+    },
+    "full_reading": {
+      "type": "string"
+    },
+    "full_word_jp": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "masu_form": {
+      "type": "string"
+    },
+    "test_hanji": {
+      "type": "string"
+    },
+    "test_hiragana": {
       "type": "string"
     }
   }
