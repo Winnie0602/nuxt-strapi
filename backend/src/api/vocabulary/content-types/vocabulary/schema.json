@@ -50,12 +50,6 @@
     },
     "masu_form": {
       "type": "string"
-    },
-    "test_hanji": {
-      "type": "string"
-    },
-    "test_hiragana": {
-      "type": "string"
     }
   }
 }

@@ -399,8 +399,6 @@ export interface ApiVocabularyVocabulary extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     masu_form: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    test_hanji: Schema.Attribute.String;
-    test_hiragana: Schema.Attribute.String;
     translate_ch: Schema.Attribute.String & Schema.Attribute.Required;
     type: Schema.Attribute.Enumeration<['noun', 'adj', 'verb', 'adv']>;
     updatedAt: Schema.Attribute.DateTime;
