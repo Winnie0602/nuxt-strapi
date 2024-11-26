@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@nuxt/eslint": "^0.7.1",
+    "@nuxt/icon": "^1.8.2",
     "@nuxt/ui": "^2.19.2",
     "@nuxtjs/strapi": "^2.0.0",
     "diff-match-patch": "^1.0.5",

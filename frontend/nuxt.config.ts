@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/eslint', '@nuxtjs/strapi', '@nuxt/ui'],
+  modules: ['@nuxt/eslint', '@nuxtjs/strapi', '@nuxt/icon', '@nuxt/ui'],
 
   strapi: {
     url: process.env.STRAPI_URL || 'http://localhost:1337',
@@ -23,5 +23,19 @@ export default defineNuxtConfig({
         url: process.env.STRAPI_URL,
       },
     },
+  },
+
+  routeRules: {
+    // 轉址
+    '/learning': { redirect: '/learning/vocabularies' },
+  },
+
+  icon: {
+    customCollections: [
+      {
+        prefix: 'icon',
+        dir: './assets/icons',
+      },
+    ],
   },
 })
