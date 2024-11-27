@@ -1,12 +1,5 @@
 <script setup lang="ts">
-interface Vocabulary {
-  id: number
-  full_word_jp: string
-  translate_ch: string
-  full_reading: string
-  masu_form: string
-  html_hiragana: string
-}
+import type { Vocabulary } from '~/types/type'
 
 const { find } = useStrapi()
 
@@ -18,12 +11,12 @@ const showChinese = ref(true)
 </script>
 
 <template>
-  <div class="flex space-x-4 px-4 xl:space-x-8">
-    <LearningTypeMenu />
+  <div class="flex space-x-4 px-4 xl:w-[1280px] xl:space-x-8">
+    <LearningMenu />
     <div class="w-full">
       <div>
-        <!-- 控制 -->
         <div class="flex flex-col justify-start lg:flex-row">
+          <!-- 控制顯示方式 -->
           <div role="tablist" class="tabs-boxed tabs mb-3 mr-5 w-full">
             <button
               role="tab"
@@ -49,39 +42,6 @@ const showChinese = ref(true)
             >
               顯示兩者
             </button>
-          </div>
-          <div class="flex justify-end space-x-4 text-sm">
-            <div class="form-control">
-              <label class="label cursor-pointer">
-                <span class="label-text mr-1">Noun</span>
-                <input
-                  checkbox-xs
-                  type="checkbox"
-                  checked="checked"
-                  class="checkbox-secondary checkbox"
-                />
-              </label>
-            </div>
-            <div class="form-control">
-              <label class="label cursor-pointer">
-                <span class="label-text mr-1">Verb</span>
-                <input
-                  type="checkbox"
-                  checked="checked"
-                  class="checkbox-secondary checkbox"
-                />
-              </label>
-            </div>
-            <div class="form-control">
-              <label class="label cursor-pointer">
-                <span class="label-text mr-1">Adj</span>
-                <input
-                  type="checkbox"
-                  checked="checked"
-                  class="checkbox-secondary checkbox"
-                />
-              </label>
-            </div>
           </div>
         </div>
 
@@ -121,23 +81,27 @@ const showChinese = ref(true)
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in data" :key="item.id" class="hover">
+                <tr v-for="(item, idx) in data" :key="item.id" class="hover">
                   <td width="40%" class="">
                     <div class="flex items-center">
-                      <div v-html="item.html_hiragana"></div>
-                      <button class="ml-2">
-                        <Icon
-                          mode="svg"
-                          name="icon:volume-on"
-                          class="h-[18px] w-[18px] fill-gray-600"
-                        />
-                      </button>
+                      <div
+                        v-if="mode === 'both'"
+                        v-html="item.html_hiragana"
+                      ></div>
+                      <div v-else>
+                        {{
+                          mode === 'hanji'
+                            ? item.full_word_jp
+                            : item.full_reading
+                        }}
+                      </div>
+                      <VoiceSpeak :word="item.full_reading" />
                     </div>
                   </td>
                   <td width="40%" :class="showChinese ? '' : 'text-white'">
                     {{ item.translate_ch }}
                   </td>
-                  <td width="5%">verb</td>
+                  <td width="5%">{{ item.type }}</td>
                   <td width="15%">
                     <div class="flex">
                       <button class="btn btn-ghost btn-xs">

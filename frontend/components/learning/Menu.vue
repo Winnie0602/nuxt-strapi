@@ -4,7 +4,7 @@
       <li><a>文章</a></li>
       <li><a>對話</a></li>
       <li>
-        <NuxtLink to="/learning/vocabularies" active-class="active-navbar">
+        <NuxtLink to="/learning/vocabulary" active-class="active-navbar">
           單字
         </NuxtLink>
       </li>

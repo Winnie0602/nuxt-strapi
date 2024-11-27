@@ -2,7 +2,7 @@
   <div data-theme="pastel">
     <NavBar class="" />
     <div class="flex w-full justify-center">
-      <div class="min-h-[calc(100vh-68px)] w-full bg-white xl:w-[1280px]">
+      <div class="flex min-h-[calc(100vh-68px)] w-full justify-center bg-white">
         <slot />
       </div>
     </div>

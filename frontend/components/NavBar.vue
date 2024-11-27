@@ -6,7 +6,11 @@
       </div>
       <div class="flex-none">
         <ul class="menu menu-horizontal px-1">
-          <li><NuxtLink to="/vocabularies" class="mr-2">開始學習</NuxtLink></li>
+          <li>
+            <NuxtLink to="/learning/vocabulary" class="mr-2">
+              開始學習
+            </NuxtLink>
+          </li>
         </ul>
 
         <div class="dropdown dropdown-end">
