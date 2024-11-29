@@ -44,7 +44,12 @@ const onSubmit = async () => {
             class="input input-bordered flex max-w-[300px] items-center gap-5"
           >
             Name
-            <Field name="name" rules="required|min_value:3" type="name" />
+            <Field
+              name="name"
+              placeholder="3個字以上"
+              rules="required|min_value:3"
+              type="name"
+            />
           </label>
           <div class="mb-5 pl-4 text-left text-sm text-red-600">
             <ErrorMessage name="name" />
@@ -58,6 +63,7 @@ const onSubmit = async () => {
               name="email"
               rules="required|email|min_value:6"
               type="email"
+              placeholder="6個字以上"
             />
           </label>
           <div class="mb-5 pl-4 text-left text-sm text-red-600">
@@ -71,6 +77,7 @@ const onSubmit = async () => {
               name="password"
               rules="required|min_value:6"
               type="password"
+              placeholder="6個字以上"
               autocomplete="on"
             />
           </label>
