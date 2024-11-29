@@ -7,9 +7,7 @@
       <div class="flex-none">
         <ul class="menu menu-horizontal px-1">
           <li>
-            <NuxtLink to="/learning/vocabulary" class="mr-2">
-              開始學習
-            </NuxtLink>
+            <NuxtLink to="/learning/vocabulary" class="mr-2">開始學習</NuxtLink>
           </li>
         </ul>
 

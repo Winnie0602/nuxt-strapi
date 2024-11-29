@@ -3,7 +3,7 @@ import { Form, Field, ErrorMessage, defineRule, configure } from 'vee-validate'
 import { required, min, email } from '@vee-validate/rules'
 import { localize } from '@vee-validate/i18n'
 
-const { login } = useStrapiAuth()
+const { register } = useStrapiAuth()
 
 // const user = useStrapiUser()
 const router = useRouter()
@@ -31,8 +31,9 @@ configure({
 // 提交
 const onSubmit = async () => {
   try {
-    await login({
-      identifier: inputEmail.value,
+    await register({
+      username: inputName.value,
+      email: inputEmail.value,
       password: inputPassword.value,
     })
     router.push('/learning/vocabulary')
@@ -46,7 +47,7 @@ const onSubmit = async () => {
   <div class="hero min-h-[calc(100vh-68px)] bg-gray-200">
     <div class="card mx-4 w-full bg-white text-neutral-content md:mx-0 md:w-96">
       <div class="card-body items-center text-center">
-        <h2 class="card-title mb-5">登入</h2>
+        <h2 class="card-title mb-5">註冊新帳戶</h2>
         <Form class="" @submit="onSubmit">
           <label
             class="input input-bordered flex max-w-[300px] items-center gap-5"
@@ -97,8 +98,8 @@ const onSubmit = async () => {
             <ErrorMessage name="password" />
           </div>
           <div class="card-actions mt-5 justify-center">
-            <button type="submit" class="btn btn-primary">登入</button>
-            <NuxtLink to="/register" class="btn btn-ghost">直接註冊</NuxtLink>
+            <button type="submit" class="btn btn-primary">註冊</button>
+            <NuxtLink to="/register" class="btn btn-ghost">回到登入</NuxtLink>
           </div>
         </Form>
       </div>
