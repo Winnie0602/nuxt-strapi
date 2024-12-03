@@ -3,7 +3,13 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
 
-  modules: ['@nuxt/eslint', '@nuxtjs/strapi', '@nuxt/icon', '@nuxt/ui'],
+  modules: [
+    '@nuxt/eslint',
+    '@nuxtjs/strapi',
+    '@nuxt/icon',
+    '@nuxt/ui',
+    '@sidebase/nuxt-auth',
+  ],
 
   strapi: {
     url: process.env.STRAPI_URL || 'http://localhost:1337',
@@ -23,6 +29,8 @@ export default defineNuxtConfig({
         url: process.env.STRAPI_URL,
       },
     },
+    authSecret: process.env.AUTH_SECRET,
+    strapiBseUrl: process.env.STRAPI_BASE_URL,
   },
 
   routeRules: {
@@ -38,6 +46,4 @@ export default defineNuxtConfig({
       },
     ],
   },
-
-  
 })

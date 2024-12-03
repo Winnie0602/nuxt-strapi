@@ -11,7 +11,9 @@ const showChinese = ref(true)
 </script>
 
 <template>
-  <div class="flex space-x-4 px-4 xl:w-[1280px] xl:space-x-8">
+  <div
+    class="flex w-[100vw] space-x-4 px-4 md:w-[calc(100vw-32px)] xl:w-[1280px] xl:space-x-8"
+  >
     <LearningMenu />
     <div class="w-full">
       <div>

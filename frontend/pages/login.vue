@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { Form, Field, ErrorMessage, defineRule, configure } from 'vee-validate'
+import {
+  Form,
+  Field,
+  ErrorMessage,
+  defineRule,
+  configure,
+  type SubmissionHandler,
+} from 'vee-validate'
 import { required, min, email } from '@vee-validate/rules'
 import { localize } from '@vee-validate/i18n'
 
-const { login } = useStrapiAuth()
-
-// const user = useStrapiUser()
-const router = useRouter()
-
-const inputName = ref('')
-const inputEmail = ref('winnie@gmail.com')
-const inputPassword = ref('123456')
-
-// 建立規則
+// 建立表單規則
 defineRule('required', required)
 defineRule('min_value', min)
 defineRule('email', email)
@@ -22,22 +20,37 @@ configure({
   generateMessage: localize('ch', {
     messages: {
       required: '必填項目',
-      min_value: '最少{params}個字 ',
+      min_value: '最少{params}個字',
       email: '請輸入正確格式',
     },
   }),
 })
 
-// 提交
-const onSubmit = async () => {
-  try {
-    await login({
-      identifier: inputEmail.value,
-      password: inputPassword.value,
-    })
-    router.push('/learning/vocabulary')
-  } catch (e) {
-    console.log(e)
+// nuxt auth signin
+const { signIn } = useAuth()
+
+const loading = ref(false)
+
+//  一般帳密登入
+const onSubmit: SubmissionHandler = async (values, actions) => {
+  loading.value = true
+
+  // https://github.com/sidebase/nuxt-auth/issues/493
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error, url }: any = await signIn('credentials', {
+    identifier: 'winnie@gmail.com',
+    password: '123456',
+    redirect: false,
+    callbackUrl: '/',
+  })
+
+  loading.value = false
+
+  if (error) {
+    actions.setFieldError('email', '帳號密碼錯誤')
+  } else {
+    // 登入成功導到deletecheck頁面
+    return navigateTo(url, { external: true })
   }
 }
 </script>
@@ -53,7 +66,6 @@ const onSubmit = async () => {
           >
             Name
             <Field
-              v-model="inputName"
               name="name"
               placeholder="3個字以上"
               rules="required|min_value:3"
@@ -69,7 +81,6 @@ const onSubmit = async () => {
           >
             Email
             <Field
-              v-model="inputEmail"
               name="email"
               rules="required|email|min_value:6"
               type="email"
@@ -84,7 +95,6 @@ const onSubmit = async () => {
           >
             Password
             <Field
-              v-model="inputPassword"
               name="password"
               rules="required|min_value:6"
               type="password"
