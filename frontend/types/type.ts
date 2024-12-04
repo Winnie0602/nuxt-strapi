@@ -1,5 +1,6 @@
 export type Vocabulary = {
   id: number
+  documentId: string
   full_word_jp: string
   translate_ch: string
   full_reading: string

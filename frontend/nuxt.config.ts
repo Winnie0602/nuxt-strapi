@@ -30,7 +30,7 @@ export default defineNuxtConfig({
       },
     },
     authSecret: process.env.AUTH_SECRET,
-    strapiBseUrl: process.env.STRAPI_BASE_URL,
+    strapiBaseUrl: process.env.STRAPI_BASE_URL,
   },
 
   routeRules: {

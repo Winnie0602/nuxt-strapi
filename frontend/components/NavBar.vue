@@ -43,7 +43,7 @@ const user = data.value?.user
               <li><a>調整語速</a></li>
             </ul>
           </div>
-          Hi~~ {{ user?.name }}
+          Hi~~ {{ user.username }}
         </div>
 
         <button

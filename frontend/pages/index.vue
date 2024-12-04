@@ -1,19 +1,23 @@
 <script setup lang="ts">
-const { find, findOne, create } = useStrapi()
+import type { Vocabulary } from '~/types/type'
 
-// GET
-const { data } = await find('vocabularies')
-// const aaa = await findOne('vocabularies', '5')
+const { data: vocabularies } = useFetch<{ data: Vocabulary[] }>(
+  '/api/vocabularies',
+)
 
-// POST
-// const onSubmit = async () => {
-//   await create('vocabularies', {
-//     name_jp: 'My restaurant2',
-//     translate_ch: '1232',
-//   })
-// }
+const { data: vocabulary } = useFetch('/api/vocabulary', {
+  method: 'post',
+  body: { documentId: 'vrpfwoemoz3vpy1xth4r9qev' },
+})
+
+console.log(vocabulary.value)
 </script>
 
 <template>
-  <div class="text-red-500">123</div>
+  <div class="flex flex-col space-y-10 px-10 text-gray-500">
+    <!-- <div>user: {{ user }}</div>
+{{}}
+    <div>getSession: {{ session }}</div> -->
+    {{ vocabularies?.data[0].documentId }}
+  </div>
 </template>

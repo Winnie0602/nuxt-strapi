@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type { Vocabulary } from '~/types/type'
 
-const { find } = useStrapi()
-
-const { data }: { data: Vocabulary[] } = await find('vocabularies')
+const { data } = useFetch<{ data: Vocabulary[] }>('/api/vocabularies')
 
 const mode = ref<'hanji' | 'hiragana' | 'both'>('hanji')
 
@@ -83,7 +81,11 @@ const showChinese = ref(true)
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, idx) in data" :key="item.id" class="hover">
+                <tr
+                  v-for="item in data?.data"
+                  :key="item.id"
+                  class="hover"
+                >
                   <td width="40%" class="">
                     <div class="flex items-center">
                       <div

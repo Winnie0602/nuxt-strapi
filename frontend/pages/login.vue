@@ -49,7 +49,6 @@ const onSubmit: SubmissionHandler = async (values, actions) => {
   if (error) {
     actions.setFieldError('email', '帳號密碼錯誤')
   } else {
-    // 登入成功導到deletecheck頁面
     return navigateTo(url, { external: true })
   }
 }
