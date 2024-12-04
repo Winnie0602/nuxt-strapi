@@ -11,6 +11,10 @@ const { data: vocabulary } = useFetch('/api/vocabulary', {
 })
 
 console.log(vocabulary.value)
+
+const { getSession } = useAuth()
+
+const session = await getSession()
 </script>
 
 <template>
@@ -19,5 +23,6 @@ console.log(vocabulary.value)
 {{}}
     <div>getSession: {{ session }}</div> -->
     {{ vocabularies?.data[0].documentId }}
+    {{ session }}
   </div>
 </template>
