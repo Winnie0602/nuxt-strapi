@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig()
   if (session) {
-    return await $fetch<{ data: { favorites: Vocabulary[] } }>(
+    const result = await $fetch<{ favorites: Vocabulary[] }>(
       `${config.strapiBaseUrl}/users/me?populate=favorites`,
       {
         method: 'GET',
@@ -15,5 +15,6 @@ export default defineEventHandler(async (event) => {
         },
       },
     )
+    return result.favorites.filter(e => e.publishedAt !== null)
   }
 })

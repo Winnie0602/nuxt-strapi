@@ -7,4 +7,5 @@ export type Vocabulary = {
   masu_form: string
   html_hiragana: string
   type: string
+  publishedAt: string
 }

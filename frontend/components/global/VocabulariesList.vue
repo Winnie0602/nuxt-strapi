@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Vocabulary } from '~/types/type'
 
-defineProps<{ vocabularies: Vocabulary[] }>()
+defineProps<{ vocabularies: Vocabulary[]; myFavorites?: Vocabulary[] }>()
 
 const mode = ref<'hanji' | 'hiragana' | 'both'>('hanji')
 
@@ -100,6 +100,17 @@ const showChinese = ref(true)
                   <div class="flex">
                     <button class="btn btn-ghost btn-xs">
                       <Icon
+                        v-if="
+                          myFavorites?.find(
+                            (e) => e.documentId === item.documentId,
+                          )
+                        "
+                        name="icon:heart-full"
+                        mode="svg"
+                        class="h-4 w-4 fill-red-600"
+                      />
+                      <Icon
+                        v-else
                         name="icon:heart-empty"
                         mode="svg"
                         class="h-4 w-4"
