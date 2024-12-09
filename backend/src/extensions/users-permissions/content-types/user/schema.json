@@ -67,9 +67,9 @@
     },
     "favorites": {
       "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::vocabulary.vocabulary",
-      "mappedBy": "users_favorited_by"
+      "relation": "oneToMany",
+      "target": "api::favorite.favorite",
+      "mappedBy": "user"
     }
   }
 }

@@ -14,24 +14,13 @@
   "attributes": {
     "type": {
       "type": "enumeration",
-      "enum": [
-        "noun",
-        "adj",
-        "verb",
-        "adv"
-      ]
+      "enum": ["noun", "adj", "verb", "adv"]
     },
     "example_1": {
       "type": "string"
     },
     "example_2": {
       "type": "string"
-    },
-    "users_favorited_by": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "favorites"
     },
     "translate_ch": {
       "type": "string",
@@ -50,6 +39,12 @@
     },
     "masu_form": {
       "type": "string"
+    },
+    "favorites": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::favorite.favorite",
+      "mappedBy": "vocabularies"
     }
   }
 }

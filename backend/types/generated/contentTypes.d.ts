@@ -369,6 +369,43 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiFavoriteFavorite extends Struct.CollectionTypeSchema {
+  collectionName: 'favorites';
+  info: {
+    description: '';
+    displayName: 'Favorite';
+    pluralName: 'favorites';
+    singularName: 'favorite';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::favorite.favorite'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    > &
+      Schema.Attribute.Unique;
+    vocabularies: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::vocabulary.vocabulary'
+    >;
+  };
+}
+
 export interface ApiVocabularyVocabulary extends Struct.CollectionTypeSchema {
   collectionName: 'vocabularies';
   info: {
@@ -386,6 +423,10 @@ export interface ApiVocabularyVocabulary extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     example_1: Schema.Attribute.String;
     example_2: Schema.Attribute.String;
+    favorites: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::favorite.favorite'
+    >;
     full_reading: Schema.Attribute.String;
     full_word_jp: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -404,10 +445,6 @@ export interface ApiVocabularyVocabulary extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    users_favorited_by: Schema.Attribute.Relation<
-      'manyToMany',
-      'plugin::users-permissions.user'
-    >;
   };
 }
 
@@ -879,10 +916,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
-    favorites: Schema.Attribute.Relation<
-      'manyToMany',
-      'api::vocabulary.vocabulary'
-    >;
+    favorites: Schema.Attribute.Relation<'oneToMany', 'api::favorite.favorite'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -923,6 +957,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::favorite.favorite': ApiFavoriteFavorite;
       'api::vocabulary.vocabulary': ApiVocabularyVocabulary;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

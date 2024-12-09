@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import type { Vocabulary } from '~/types/type'
 
-defineProps<{ vocabularies: Vocabulary[]; myFavorites?: Vocabulary[] }>()
+defineProps<{ vocabularies: Vocabulary[] }>()
+
+type Favorites = {
+  documentId: string
+  vocabularies: Vocabulary[]
+}
+
+const { data: myFavorites } = useFetch<Favorites>('/api/favorites')
+
+console.log(myFavorites.value)
 
 const mode = ref<'hanji' | 'hiragana' | 'both'>('hanji')
 
@@ -98,24 +107,12 @@ const showChinese = ref(true)
                 <td width="5%">{{ item.type }}</td>
                 <td width="15%">
                   <div class="flex">
-                    <button class="btn btn-ghost btn-xs">
-                      <Icon
-                        v-if="
-                          myFavorites?.find(
-                            (e) => e.documentId === item.documentId,
-                          )
-                        "
-                        name="icon:heart-full"
-                        mode="svg"
-                        class="h-4 w-4 fill-red-600"
-                      />
-                      <Icon
-                        v-else
-                        name="icon:heart-empty"
-                        mode="svg"
-                        class="h-4 w-4"
-                      />
-                    </button>
+                    <FavoriteButton
+                      v-if="myFavorites"
+                      :my-favorites="myFavorites"
+                      :document-id="item.documentId"
+                      :item="item"
+                    />
                     <button class="btn btn-ghost btn-xs">
                       <Icon name="icon:open-modal" mode="svg" class="h-4 w-4" />
                     </button>
