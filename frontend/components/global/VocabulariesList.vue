@@ -8,9 +8,17 @@ type Favorites = {
   vocabularies: Vocabulary[]
 }
 
-const { data: myFavorites } = useFetch<Favorites>('/api/favorites')
+const { data: myFavorites, error } = useFetch<Favorites>('/api/favorites')
 
 console.log(myFavorites.value)
+
+if (error.value?.statusCode === 401) {
+  console.log('token error')
+}
+
+if (error.value?.statusCode === 403) {
+  console.log('you dont have record in DB')
+}
 
 const mode = ref<'hanji' | 'hiragana' | 'both'>('hanji')
 
@@ -108,8 +116,12 @@ const showChinese = ref(true)
                 <td width="15%">
                   <div class="flex">
                     <FavoriteButton
-                      v-if="myFavorites"
-                      :my-favorites="myFavorites"
+                      :my-favorites="
+                        myFavorites || {
+                          documentId: '',
+                          vocabularies: [],
+                        }
+                      "
                       :document-id="item.documentId"
                       :item="item"
                     />

@@ -6,6 +6,8 @@ type Favorites = {
   vocabularies: Vocabulary[]
 }
 
+const { status } = useAuth()
+
 const props = defineProps<{
   myFavorites: Favorites
   documentId: string
@@ -13,11 +15,22 @@ const props = defineProps<{
 }>()
 
 const hasFavoriteRecord = computed(() => {
-  return props.myFavorites && props.myFavorites.vocabularies.length > 0
+  return props.myFavorites && props.myFavorites.documentId !== ''
 })
 
+const isLiked = ref(
+  !!props.myFavorites.vocabularies.find(
+    (e) => e.documentId === props.documentId,
+  ),
+)
+
 const handleFavorite = async (nowId: string) => {
-  if (hasFavoriteRecord.value && props.myFavorites) {
+  if (status.value === 'unauthenticated') {
+    alert('you should loggin')
+
+    return
+  }
+  if (hasFavoriteRecord.value) {
     // 資料庫用戶有喜愛的單字 -> PUT
     const vocabulariesList = props.myFavorites.vocabularies.map(
       (e) => e.documentId,
@@ -27,14 +40,29 @@ const handleFavorite = async (nowId: string) => {
         method: 'PUT',
         body: {
           documentId: props.myFavorites?.documentId,
-          vocabulariesList: [...vocabulariesList, nowId],
+          vocabulariesList: isLiked.value
+            ? vocabulariesList.filter((e) => e !== nowId)
+            : [...vocabulariesList, nowId],
         },
       })
+
+      isLiked.value = !isLiked.value
     } catch (e) {
       console.log('something wrong')
     }
   } else {
-    console.log()
+    try {
+      await $fetch('/api/favorites', {
+        method: 'POST',
+        body: {
+          vocabulary: [nowId],
+        },
+      })
+
+      isLiked.value = !isLiked.value
+    } catch (e) {
+      console.log('something wrong')
+    }
   }
 }
 </script>
@@ -42,7 +70,7 @@ const handleFavorite = async (nowId: string) => {
 <template>
   <button class="btn btn-ghost btn-xs" @click="handleFavorite(item.documentId)">
     <Icon
-      v-if="myFavorites.vocabularies.find((e) => e.documentId === documentId)"
+      v-if="isLiked"
       name="icon:heart-full"
       mode="svg"
       class="h-4 w-4 fill-red-600"

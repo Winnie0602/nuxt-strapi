@@ -4,6 +4,8 @@ import type { Vocabulary } from '~/types/type'
 const { data: vocabularies } = useFetch<{ data: Vocabulary[] }>(
   '/api/vocabularies',
 )
+
+console.log(vocabularies.value)
 </script>
 
 <template>

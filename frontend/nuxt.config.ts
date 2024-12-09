@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/ui',
     '@sidebase/nuxt-auth',
+    '@pinia/nuxt',
   ],
 
   strapi: {
