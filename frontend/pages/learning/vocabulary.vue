@@ -19,6 +19,7 @@ if (error.value?.statusCode === 401) {
 if (error.value?.statusCode === 403) {
   console.log('you dont have record in DB')
 }
+
 </script>
 
 <template>
@@ -26,6 +27,7 @@ if (error.value?.statusCode === 403) {
     class="flex w-[100vw] space-x-4 px-4 md:w-[calc(100vw-32px)] xl:w-[1280px] xl:space-x-8"
   >
     <LearningMenu />
+    
     <VocabulariesList
       :vocabularies="vocabularies?.data || []"
       :my-favorites="
