@@ -2,66 +2,47 @@
 const { signOut, data } = useAuth()
 
 const user = data.value?.user
+
+// <li>
+//                 <a>我的收藏</a>
+//               </li>
+//               <li><a>個人檔案</a></li>
+//               <li><a>新增內容</a></li>
+//               <li><a>新增內容</a></li>
+//               <li><a>調整語速</a></li>
 </script>
 
 <template>
-  <div class="flex justify-center">
-    <div class="navbar w-full bg-base-100 xl:w-[1280px]">
-      <div class="flex-1">
-        <a class="btn btn-ghost text-xl">daisyUI</a>
-      </div>
-      <div class="flex-none">
-        <ul class="menu menu-horizontal px-1">
-          <li>
-            <NuxtLink to="/learning/vocabulary" class="mr-2">開始學習</NuxtLink>
-          </li>
-        </ul>
-        <div v-if="data" class="flex items-center">
-          <div class="dropdown dropdown-end">
-            <div
-              tabindex="0"
-              role="button"
-              class="avatar btn btn-circle btn-ghost"
-            >
-              <div class="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                />
-              </div>
-            </div>
-            <ul
-              tabindex="0"
-              class="menu dropdown-content menu-sm z-[1] mt-3 w-[150px] rounded-box bg-base-100 p-2 text-center shadow"
-            >
-              <li>
-                <a>我的收藏</a>
-              </li>
-              <li><a>個人檔案</a></li>
-              <li><a>新增內容</a></li>
-              <li><a>新增內容</a></li>
-              <li><a>調整語速</a></li>
-            </ul>
+  <div>
+    <UiNavbar>
+      <UiContainer
+        class="flex h-14 items-center justify-between border border-b-0 px-8"
+      >
+        <NuxtLink to="/" class="font-semibold">My JP Learning</NuxtLink>
+        <nav class="hidden items-center gap-5 sm:flex">
+          <div v-if="data" class="flex items-center">
+            Hi~~ {{ user?.username }}
           </div>
-          Hi~~ {{ user.username }}
-        </div>
+          <NuxtLink
+            to="/learning/vocabulary"
+            class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            開始學習
+          </NuxtLink>
 
-        <button
-          v-if="data"
-          class="btn btn-outline btn-error"
-          @click="signOut()"
-        >
-          登出
-        </button>
+          <button
+            v-if="data"
+            class="btn btn-outline btn-error"
+            @click="signOut()"
+          >
+            登出
+          </button>
 
-        <NuxtLink
-          v-else
-          to="/login"
-          class="h-8 rounded-md border-[1px] border-error bg-error px-[10px] py-[6px] text-sm text-white hover:bg-white hover:text-error"
-        >
-          登入 / 註冊
-        </NuxtLink>
-      </div>
-    </div>
+          <div v-else class="text-center">
+            <UiButton @click="navigateTo('/login')">登入 / 註冊</UiButton>
+          </div>
+        </nav>
+      </UiContainer>
+    </UiNavbar>
   </div>
 </template>

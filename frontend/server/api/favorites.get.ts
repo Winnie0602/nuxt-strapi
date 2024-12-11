@@ -1,11 +1,6 @@
 import { getServerSession } from '#auth'
 import type { Vocabulary } from '~/types/type'
 
-type Favorites = {
-  documentId: string
-  vocabularies: Vocabulary[]
-}
-
 type Data = { documentId: string; vocabularies: Vocabulary[] }
 
 export default defineEventHandler(async (event) => {
@@ -20,12 +15,10 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    const favorites: Favorites = {
+    return {
       documentId: result.length > 0 ? result[0].documentId : '',
       vocabularies: result.length > 0 ? result[0].vocabularies : [],
     }
-
-    return favorites
   }
   return {
     documentId: '',

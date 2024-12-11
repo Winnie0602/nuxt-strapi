@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import type { Vocabulary } from '~/types/type'
 
-type Favorites = {
-  documentId: string
-  vocabularies: Vocabulary[]
-}
-
 const { status } = useAuth()
 
 const props = defineProps<{
-  myFavorites: Favorites
+  myFavorites: {
+    documentId: string
+    vocabularies: Vocabulary[]
+  }
   documentId: string
   item: Vocabulary
 }>()
@@ -51,6 +49,7 @@ const handleFavorite = async (nowId: string) => {
       console.log('something wrong')
     }
   } else {
+    // 資料庫用戶沒喜愛的單字 -> PUT
     try {
       await $fetch('/api/favorites', {
         method: 'POST',

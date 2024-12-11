@@ -10,6 +10,10 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@sidebase/nuxt-auth',
     '@pinia/nuxt',
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/color-mode",
+    "@vueuse/nuxt",
+    "@nuxt/fonts"
   ],
 
   strapi: {
@@ -17,8 +21,8 @@ export default defineNuxtConfig({
   },
 
   tailwindcss: {
-    // https://tailwindcss.nuxtjs.org/getting-started/configuration
-    editorSupport: true,
+    exposeConfig: true,
+    editorSupport: true
   },
 
   runtimeConfig: {
@@ -47,4 +51,19 @@ export default defineNuxtConfig({
       },
     ],
   },
+
+  colorMode: {
+    classSuffix: ""
+  },
+
+  imports: {
+    imports: [{
+      from: "tailwind-variants",
+      name: "tv"
+    }, {
+      from: "tailwind-variants",
+      name: "VariantProps",
+      type: true
+    }]
+  }
 })

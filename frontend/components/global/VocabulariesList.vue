@@ -1,26 +1,16 @@
 <script setup lang="ts">
 import type { Vocabulary } from '~/types/type'
 
-defineProps<{ vocabularies: Vocabulary[] }>()
-
 type Favorites = {
   documentId: string
   vocabularies: Vocabulary[]
 }
 
-const { data: myFavorites, error } = useFetch<Favorites>('/api/favorites')
+defineProps<{ vocabularies?: Vocabulary[]; myFavorites: Favorites }>()
 
-console.log(myFavorites.value)
+const textMode = ref<'hanji' | 'hiragana' | 'both'>('hanji')
 
-if (error.value?.statusCode === 401) {
-  console.log('token error')
-}
-
-if (error.value?.statusCode === 403) {
-  console.log('you dont have record in DB')
-}
-
-const mode = ref<'hanji' | 'hiragana' | 'both'>('hanji')
+const form = ref<'masu' | 'basic'>('basic')
 
 const showChinese = ref(true)
 </script>
@@ -30,30 +20,22 @@ const showChinese = ref(true)
     <div>
       <div class="flex flex-col justify-start lg:flex-row">
         <!-- 控制顯示方式 -->
-        <div role="tablist" class="tabs-boxed tabs mb-3 mr-5 w-full">
+        <div role="tablist" class="tabs-boxed tabs mb-3 mr-5 w-1/2">
           <button
             role="tab"
             class="tab"
-            :class="{ 'tab-active': mode === 'hanji' }"
-            @click="mode = 'hanji'"
+            :class="{ 'tab-active': form === 'basic' }"
+            @click="form = 'basic'"
           >
-            漢字
+            原形
           </button>
           <button
             role="tab"
             class="tab"
-            :class="{ 'tab-active': mode === 'hiragana' }"
-            @click="mode = 'hiragana'"
+            :class="{ 'tab-active': form === 'masu' }"
+            @click="form = 'masu'"
           >
-            平假名
-          </button>
-          <button
-            role="tab"
-            class="tab"
-            :class="{ 'tab-active': mode === 'both' }"
-            @click="mode = 'both'"
-          >
-            顯示兩者
+            丁寧體
           </button>
         </div>
       </div>
@@ -64,7 +46,34 @@ const showChinese = ref(true)
             <!-- head -->
             <thead>
               <tr class="text-lg">
-                <th class="">單字</th>
+                <th class="">
+                  <div role="tablist" class="tabs-boxed tabs w-full">
+                    <button
+                      role="tab"
+                      class="tab"
+                      :class="{ 'tab-active': textMode === 'hanji' }"
+                      @click="textMode = 'hanji'"
+                    >
+                      漢字
+                    </button>
+                    <button
+                      role="tab"
+                      class="tab"
+                      :class="{ 'tab-active': textMode === 'hiragana' }"
+                      @click="textMode = 'hiragana'"
+                    >
+                      平假名
+                    </button>
+                    <button
+                      role="tab"
+                      class="tab"
+                      :class="{ 'tab-active': textMode === 'both' }"
+                      @click="textMode = 'both'"
+                    >
+                      顯示兩者
+                    </button>
+                  </div>
+                </th>
                 <th class="flex items-center">
                   <button @click="showChinese = !showChinese">
                     <svg
@@ -98,12 +107,14 @@ const showChinese = ref(true)
                 <td width="40%" class="">
                   <div class="flex items-center">
                     <div
-                      v-if="mode === 'both'"
+                      v-if="textMode === 'both'"
                       v-html="item.html_hiragana"
                     ></div>
                     <div v-else>
                       {{
-                        mode === 'hanji' ? item.full_word_jp : item.full_reading
+                        textMode === 'hanji'
+                          ? item.full_word_jp
+                          : item.full_reading
                       }}
                     </div>
                     <VoiceSpeak :word="item.full_reading" />
