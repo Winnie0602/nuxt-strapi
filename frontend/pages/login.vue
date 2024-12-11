@@ -55,62 +55,63 @@ const onSubmit: SubmissionHandler = async (values, actions) => {
 </script>
 
 <template>
-  <div class="hero min-h-[calc(100vh-68px)] bg-gray-200">
-    <div class="card mx-4 w-full bg-white text-neutral-content md:mx-0 md:w-96">
-      <div class="card-body items-center text-center">
-        <h2 class="card-title mb-5">登入</h2>
-        <Form class="" @submit="onSubmit">
-          <label
-            class="input input-bordered flex max-w-[300px] items-center gap-5"
-          >
-            Name
+  <div class="flex h-full w-full items-center justify-center">
+    <UiCard
+      title="Account"
+      description="Make changes to your account here. Click save when you're done."
+    >
+      <template #content>
+        <UiCardContent class="flex flex-col gap-4">
+          <Form class="" @submit="onSubmit">
             <Field
-              name="name"
-              placeholder="3個字以上"
-              rules="required|min_value:3"
-              type="name"
-            />
-          </label>
-          <div class="mb-5 pl-4 text-left text-sm text-red-600">
-            <ErrorMessage name="name" />
-          </div>
-
-          <label
-            class="input input-bordered flex max-w-[300px] items-center gap-5"
-          >
-            Email
-            <Field
+              v-slot="{ componentField }"
               name="email"
               rules="required|email|min_value:6"
               type="email"
               placeholder="6個字以上"
-            />
-          </label>
-          <div class="mb-5 pl-4 text-left text-sm text-red-600">
-            <ErrorMessage name="email" />
-          </div>
-          <label
-            class="input input-bordered flex max-w-[300px] items-center gap-5"
-          >
-            Password
+            >
+              <UiFormItem>
+                <UiInput
+                  type="email"
+                  v-bind="componentField"
+                  placeholder="信箱"
+                />
+              </UiFormItem>
+            </Field>
+            <div class="mb-2 ml-1 text-left text-sm text-red-600">
+              <ErrorMessage name="email" />
+            </div>
             <Field
+              v-slot="{ componentField }"
               name="password"
               rules="required|min_value:6"
               type="password"
               placeholder="6個字以上"
               autocomplete="on"
-            />
-          </label>
-
-          <div class="pl-4 text-left text-sm text-red-600">
-            <ErrorMessage name="password" />
-          </div>
-          <div class="card-actions mt-5 justify-center">
-            <button type="submit" class="btn btn-primary">登入</button>
-            <NuxtLink to="/register" class="btn btn-ghost">直接註冊</NuxtLink>
-          </div>
-        </Form>
-      </div>
-    </div>
+            >
+              <UiFormItem>
+                <UiInput
+                  type="password"
+                  v-bind="componentField"
+                  placeholder="密碼"
+                />
+              </UiFormItem>
+            </Field>
+            <div class="mb-2 ml-1 text-left text-sm text-red-600">
+              <ErrorMessage name="password" />
+            </div>
+            <div class="flex items-center justify-between">
+              <UiButton type="submit">登入</UiButton>
+              <NuxtLink
+                to="/register"
+                class="text-right text-sm underline hover:text-red-600"
+              >
+                沒有帳號嗎？去註冊！
+              </NuxtLink>
+            </div>
+          </Form>
+        </UiCardContent>
+      </template>
+    </UiCard>
   </div>
 </template>
