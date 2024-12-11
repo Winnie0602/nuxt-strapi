@@ -15,9 +15,7 @@ const user = data.value?.user
 <template>
   <div>
     <UiNavbar>
-      <UiContainer
-        class="flex h-14 items-center justify-between border border-b-0 px-8"
-      >
+      <UiContainer class="flex h-14 items-center justify-between">
         <NuxtLink to="/" class="font-semibold">My JP Learning</NuxtLink>
         <nav class="hidden items-center gap-5 sm:flex">
           <div v-if="data" class="flex items-center">

@@ -13,7 +13,8 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/color-mode",
     "@vueuse/nuxt",
-    "@nuxt/fonts"
+    "@nuxt/fonts",
+    "@vee-validate/nuxt"
   ],
 
   strapi: {

@@ -20,7 +20,9 @@
     "@sidebase/nuxt-auth": "^0.9.4",
     "@tailwindcss/forms": "^0.5.9",
     "@vee-validate/i18n": "^4.14.7",
+    "@vee-validate/nuxt": "^4.14.7",
     "@vee-validate/rules": "^4.14.7",
+    "@vee-validate/zod": "^4.14.7",
     "@vueuse/nuxt": "^12.0.0",
     "diff-match-patch": "^1.0.5",
     "next-auth": "^4.21.1",
@@ -31,12 +33,14 @@
     "tailwindcss-animate": "^1.0.7",
     "vee-validate": "^4.14.7",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
     "@nuxtjs/tailwindcss": "^6.12.2",
     "@types/diff-match-patch": "^1.0.36",
+    "@vueuse/core": "^12.0.0",
     "daisyui": "^4.12.14",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
