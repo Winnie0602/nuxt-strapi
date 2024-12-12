@@ -9,3 +9,11 @@ export type Vocabulary = {
   type: string
   publishedAt: string
 }
+
+
+export type Pagination = {
+  page: number
+  pageSize: number
+  pageCount: number
+  total: number
+}

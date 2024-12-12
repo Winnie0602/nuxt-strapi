@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Vocabulary } from '~/types/type'
+import showToast from '~/utils/showToast'
 
 const { status } = useAuth()
 
@@ -12,9 +13,11 @@ const props = defineProps<{
   item: Vocabulary
 }>()
 
-const hasFavoriteRecord = computed(() => {
-  return props.myFavorites && props.myFavorites.documentId !== ''
-})
+const emit = defineEmits(['refresh'])
+
+const hasFavoriteRecord = ref(
+  props.myFavorites && props.myFavorites.documentId !== '',
+)
 
 const isLiked = ref(
   !!props.myFavorites.vocabularies.find(
@@ -34,22 +37,38 @@ const handleFavorite = async (nowId: string) => {
       (e) => e.documentId,
     )
     try {
+      const arr = []
+      const toast = {
+        title: '',
+        description: '',
+      }
+      if (isLiked.value) {
+        arr.push(vocabulariesList.filter((e) => e !== nowId))
+        toast.title = '移除收藏成功'
+        toast.description = 'お気に入りを解除しました'
+      } else {
+        arr.push(vocabulariesList.filter((e) => e !== nowId))
+        toast.title = '新增收藏成功'
+        toast.description = 'データの追加に成功しました'
+      }
+
       await $fetch('/api/favorites', {
         method: 'PUT',
         body: {
           documentId: props.myFavorites?.documentId,
-          vocabulariesList: isLiked.value
-            ? vocabulariesList.filter((e) => e !== nowId)
-            : [...vocabulariesList, nowId],
+          vocabulariesList: arr,
         },
       })
 
       isLiked.value = !isLiked.value
+
+      showToast(toast.title, toast.description)
     } catch (e) {
-      console.log('something wrong')
+      console.log(e)
+      showToast('新增失敗', 'データの追加に失敗しました')
     }
   } else {
-    // 資料庫用戶沒喜愛的單字 -> PUT
+    // 資料庫用戶沒喜愛的單字 -> POST
     try {
       await $fetch('/api/favorites', {
         method: 'POST',
@@ -59,8 +78,16 @@ const handleFavorite = async (nowId: string) => {
       })
 
       isLiked.value = !isLiked.value
+
+      showToast('新增收藏成功', 'データの追加に成功しました')
+
+      hasFavoriteRecord.value = true
+
+      emit('refresh')
     } catch (e) {
-      console.log('something wrong')
+      console.log(e)
+
+      showToast('新增失敗', 'データの追加に失敗しました')
     }
   }
 }

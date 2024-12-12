@@ -7,33 +7,38 @@ type Favorites = {
 }
 
 const props = defineProps<{
-  vocabularies?: Vocabulary[]
+  vocabularies: Vocabulary[]
   myFavorites: Favorites
 }>()
 
-const filterVocabularies = ref(props.vocabularies)
+const filterVocabularies = computed(() => {
+  if (search.value !== '') {
+    return props.vocabularies.filter(
+      (item) =>
+        item.full_word_jp.includes(search.value) ||
+        item.translate_ch.includes(search.value),
+    )
+  }
+  return props.vocabularies
+})
 
-const textMode = ref<'hanji' | 'hiragana' | 'both'>('hanji')
-
-const form = ref<'masu' | 'basic'>('basic')
+const textMode = ref<'hanji' | 'hiragana' | 'both'>('both')
 
 const search = ref('')
 
 const showChinese = ref(true)
 
-const searchHandler = () => {
-  if (search.value === '') {
-    filterVocabularies.value = props.vocabularies
+// const searchHandler = () => {
+//   if (search.value === '') {
+//     return props.vocabularies
+//   }
 
-    return
-  }
-
-  filterVocabularies.value = filterVocabularies.value?.filter(
-    (item) =>
-      item.full_word_jp.includes(search.value) ||
-      item.full_reading.includes(search.value),
-  )
-}
+//   filterVocabularies.value = filterVocabularies.value?.filter(
+//     (item) =>
+//       item.full_word_jp.includes(search.value) ||
+//       item.full_reading.includes(search.value),
+//   )
+// }
 </script>
 
 <template>
@@ -53,7 +58,9 @@ const searchHandler = () => {
               <UiTableHead class="w-[100px]">
                 <UiPopover>
                   <UiPopoverTrigger as-child>
-                    <button type="button">漢字 + 假名</button>
+                    <button type="button" class="text-nowrap">
+                      漢字 + 假名
+                    </button>
                   </UiPopoverTrigger>
                   <UiPopoverContent class="p-6">
                     <div class="flex h-full gap-1.5">
@@ -164,6 +171,7 @@ const searchHandler = () => {
           </UiTableBody>
         </UiTable>
       </div>
+      <div class="flex w-full justify-center"></div>
     </div>
   </div>
 </template>
