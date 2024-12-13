@@ -8,13 +8,15 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig()
 
-  return await $fetch<{ data: Vocabulary[] }>(
-    `${config.strapiBaseUrl}/vocabularies?pagination[page]=${query.page}&pagination[pageSize]=${query.size}`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: session ? `Bearer ${session.user.jwt}` : '',
-      },
+  const url =
+    Object.keys(query).length > 0
+      ? `${config.strapiBaseUrl}/vocabularies?pagination[page]=${query.page}&pagination[pageSize]=${query.size}`
+      : `${config.strapiBaseUrl}/vocabularies`
+
+  return await $fetch<{ data: Vocabulary[] }>(url, {
+    method: 'GET',
+    headers: {
+      Authorization: session ? `Bearer ${session.user.jwt}` : '',
     },
-  )
+  })
 })
