@@ -8,7 +8,7 @@ const page = ref(route.query.page ? Number(route.query.page) : 1)
 const { data } = await useFetch('/api/vocabularies', {
   params: {
     page: page,
-    size: 5,
+    size: 8,
   },
   watch: [page],
   transform: (data: {
@@ -39,10 +39,16 @@ if (error.value?.statusCode === 403) {
 </script>
 
 <template>
-  <div
-    class="flex w-[100vw] space-x-4 px-4 md:w-[calc(100vw-32px)] xl:w-[1280px] xl:space-x-8"
-  >
-    <LearningMenu />
+  <div class="flex w-[100vw] px-4 md:w-[calc(100vw-32px)] xl:w-[1280px]">
+    <LearningVocabularySwiper
+      :my-favorites="
+        myFavorites || {
+          documentId: '',
+          vocabularies: [],
+        }
+      "
+      class="max-w-[400px] flex-none"
+    />
 
     <div class="flex w-full flex-col items-center">
       <VocabulariesList
@@ -57,7 +63,7 @@ if (error.value?.statusCode === 403) {
 
       <UPagination
         v-model="page"
-        :page-count="10"
+        :page-count="8"
         class="mt-8"
         :total="data?.pagination.total || 0"
         :to="

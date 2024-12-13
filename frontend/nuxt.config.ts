@@ -14,7 +14,8 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@vueuse/nuxt",
     "@nuxt/fonts",
-    "@vee-validate/nuxt"
+    "@vee-validate/nuxt",
+    "@samk-dev/nuxt-vcalendar"
   ],
 
   strapi: {

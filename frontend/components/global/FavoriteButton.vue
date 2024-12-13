@@ -37,7 +37,7 @@ const handleFavorite = async (nowId: string) => {
       (e) => e.documentId,
     )
     try {
-      const arr = []
+      let arr = []
       const toast = {
         title: '',
         description: '',
@@ -47,7 +47,7 @@ const handleFavorite = async (nowId: string) => {
         toast.title = '移除收藏成功'
         toast.description = 'お気に入りを解除しました'
       } else {
-        arr.push(vocabulariesList.filter((e) => e !== nowId))
+        arr = [...vocabulariesList, nowId]
         toast.title = '新增收藏成功'
         toast.description = 'データの追加に成功しました'
       }

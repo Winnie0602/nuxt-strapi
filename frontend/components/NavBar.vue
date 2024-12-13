@@ -32,13 +32,54 @@ const menuitems = [
     <UiNavbar>
       <UiContainer class="flex h-14 items-center justify-between">
         <NuxtLink to="/" class="font-semibold">My JP Learning</NuxtLink>
-        <nav class="hidden items-center gap-5 sm:flex">
-          <NuxtLink
-            to="/learning/vocabulary"
-            class="text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            開始學習
-          </NuxtLink>
+        <nav class="hidden items-center gap-8 sm:flex">
+          <UiDropdownMenu>
+            <UiDropdownMenuTrigger>
+              <div
+                to="/learning/vocabulary"
+                class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                開始學習
+              </div>
+            </UiDropdownMenuTrigger>
+            <UiDropdownMenuContent class="w-15">
+              <UiDropdownMenuItem>
+                <NuxtLink to="/learning/vocabulary">單字</NuxtLink>
+              </UiDropdownMenuItem>
+              <UiDropdownMenuItem>
+                <NuxtLink to="/">對話</NuxtLink>
+              </UiDropdownMenuItem>
+              <UiDropdownMenuItem>
+                <NuxtLink to="/">文章</NuxtLink>
+              </UiDropdownMenuItem>
+              <UiDropdownMenuSeparator />
+              <UiDropdownMenuItem>
+                <NuxtLink to="/">各種副詞</NuxtLink>
+              </UiDropdownMenuItem>
+            </UiDropdownMenuContent>
+          </UiDropdownMenu>
+
+          <UiDropdownMenu>
+            <UiDropdownMenuTrigger>
+              <div
+                to="/learning/vocabulary"
+                class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                開始測驗
+              </div>
+            </UiDropdownMenuTrigger>
+            <UiDropdownMenuContent class="w-15">
+              <UiDropdownMenuItem>
+                <NuxtLink to="/">單字測驗</NuxtLink>
+              </UiDropdownMenuItem>
+              <UiDropdownMenuItem>
+                <NuxtLink to="/">拼字測驗</NuxtLink>
+              </UiDropdownMenuItem>
+              <UiDropdownMenuItem>
+                <NuxtLink to="/">聽力測驗</NuxtLink>
+              </UiDropdownMenuItem>
+            </UiDropdownMenuContent>
+          </UiDropdownMenu>
 
           <div v-if="data" class="flex items-center">
             <UiDropdownMenu>

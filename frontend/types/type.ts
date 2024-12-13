@@ -8,8 +8,9 @@ export type Vocabulary = {
   html_hiragana: string
   type: string
   publishedAt: string
+  example_1: string | null
+  example_2: string | null
 }
-
 
 export type Pagination = {
   page: number

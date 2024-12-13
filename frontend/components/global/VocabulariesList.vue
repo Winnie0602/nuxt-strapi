@@ -47,53 +47,56 @@ const showChinese = ref(true)
       <UiInput
         v-model="search"
         type="text"
-        placeholder="搜尋單字..."
+        placeholder="Search..."
         class="mb-8"
-        @input="searchHandler"
       />
       <div class="w-full overflow-x-auto rounded-md border pb-4">
         <UiTable>
           <UiTableHeader>
             <UiTableRow>
               <UiTableHead class="w-[100px]">
-                <UiPopover>
-                  <UiPopoverTrigger as-child>
-                    <button type="button" class="text-nowrap">
-                      漢字 + 假名
-                    </button>
-                  </UiPopoverTrigger>
-                  <UiPopoverContent class="p-6">
-                    <div class="flex h-full gap-1.5">
-                      <UiBadge
-                        :variant="
-                          textMode === 'both' ? 'destructive' : 'outline'
-                        "
-                        class="cursor-pointer"
-                        @click="textMode = 'both'"
-                      >
+                <UiTooltip disable-closing-trigger>
+                  <template #trigger>
+                    <UiTooltipTrigger as-child>
+                      <button type="button" class="text-nowrap">
                         漢字 + 假名
-                      </UiBadge>
-                      <UiBadge
-                        :variant="
-                          textMode === 'hanji' ? 'destructive' : 'outline'
-                        "
-                        class="cursor-pointer"
-                        @click="textMode = 'hanji'"
-                      >
-                        漢字
-                      </UiBadge>
-                      <UiBadge
-                        :variant="
-                          textMode === 'hiragana' ? 'destructive' : 'outline'
-                        "
-                        class="cursor-pointer"
-                        @click="textMode = 'hiragana'"
-                      >
-                        假名
-                      </UiBadge>
-                    </div>
-                  </UiPopoverContent>
-                </UiPopover>
+                      </button>
+                    </UiTooltipTrigger>
+                  </template>
+                  <template #content>
+                    <UiTooltipContent>
+                      <div class="flex h-full gap-1.5 py-2">
+                        <UiBadge
+                          :variant="
+                            textMode === 'both' ? 'destructive' : 'outline'
+                          "
+                          class="cursor-pointer"
+                          @click="textMode = 'both'"
+                        >
+                          漢字 + 假名
+                        </UiBadge>
+                        <UiBadge
+                          :variant="
+                            textMode === 'hanji' ? 'destructive' : 'outline'
+                          "
+                          class="cursor-pointer"
+                          @click="textMode = 'hanji'"
+                        >
+                          漢字
+                        </UiBadge>
+                        <UiBadge
+                          :variant="
+                            textMode === 'hiragana' ? 'destructive' : 'outline'
+                          "
+                          class="cursor-pointer"
+                          @click="textMode = 'hiragana'"
+                        >
+                          假名
+                        </UiBadge>
+                      </div>
+                    </UiTooltipContent>
+                  </template>
+                </UiTooltip>
               </UiTableHead>
               <UiTableHead></UiTableHead>
               <UiTableHead></UiTableHead>
@@ -129,8 +132,8 @@ const showChinese = ref(true)
             v-if="filterVocabularies?.length && filterVocabularies?.length > 0"
           >
             <template v-for="item in filterVocabularies" :key="item.id">
-              <UiTableRow>
-                <UiTableCell class="flex items-end font-medium">
+              <UiTableRow class="h-[58px]">
+                <UiTableCell class="flex items-end font-medium h-full">
                   <div
                     v-if="textMode === 'both'"
                     v-html="item.html_hiragana"
