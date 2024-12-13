@@ -56,6 +56,9 @@ const menuitems = [
               <UiDropdownMenuItem>
                 <NuxtLink to="/">各種副詞</NuxtLink>
               </UiDropdownMenuItem>
+              <UiDropdownMenuItem>
+                <NuxtLink to="/learning/time">時間副詞</NuxtLink>
+              </UiDropdownMenuItem>
             </UiDropdownMenuContent>
           </UiDropdownMenu>
 
@@ -73,7 +76,7 @@ const menuitems = [
                 <NuxtLink to="/">單字測驗</NuxtLink>
               </UiDropdownMenuItem>
               <UiDropdownMenuItem>
-                <NuxtLink to="/">拼字測驗</NuxtLink>
+                <NuxtLink to="/test">拼字測驗</NuxtLink>
               </UiDropdownMenuItem>
               <UiDropdownMenuItem>
                 <NuxtLink to="/">聽力測驗</NuxtLink>

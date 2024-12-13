@@ -15,7 +15,7 @@ const speak = (word: string) => {
   utterThis.lang = 'ja-JP'
 
   // 設定語速
-  utterThis.rate = 0.7
+  utterThis.rate = 0.5
 
   // 開始播放
   window.speechSynthesis.speak(utterThis)
