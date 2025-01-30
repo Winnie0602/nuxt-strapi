@@ -1,11 +1,7 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div
-    class="flex h-[calc(100dvh-64px-57px)] w-[100vw] flex-col items-center justify-center"
-  >
+  <div class="h-full border-[1px] py-10">
     <LearningTimeCalendar />
   </div>
 </template>

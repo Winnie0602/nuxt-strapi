@@ -42,7 +42,7 @@ export default defineNuxtConfig({
 
   routeRules: {
     // 轉址
-    '/learning': { redirect: '/learning/vocabularies' },
+    '/learning': { redirect: '/learning/vocabulary' },
   },
 
   icon: {

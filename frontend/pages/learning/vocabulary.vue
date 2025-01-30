@@ -39,39 +39,27 @@ if (error.value?.statusCode === 403) {
 </script>
 
 <template>
-  <div class="flex w-[100vw] px-4 md:w-[calc(100vw-32px)] xl:w-[1280px]">
-    <LearningVocabularySwiper
+  <div class="flex w-full flex-col items-center">
+    <VocabulariesList
+      :vocabularies="data?.vocabularies || []"
       :my-favorites="
         myFavorites || {
           documentId: '',
           vocabularies: [],
         }
       "
-      class="max-w-[400px] flex-none"
     />
 
-    <div class="flex w-full flex-col items-center">
-      <VocabulariesList
-        :vocabularies="data?.vocabularies || []"
-        :my-favorites="
-          myFavorites || {
-            documentId: '',
-            vocabularies: [],
-          }
-        "
-      />
-
-      <UPagination
-        v-model="page"
-        :page-count="8"
-        class="mt-8"
-        :total="data?.pagination.total || 0"
-        :to="
-          (page) => ({
-            query: { page },
-          })
-        "
-      />
-    </div>
+    <UPagination
+      v-model="page"
+      :page-count="8"
+      class="mt-8"
+      :total="data?.pagination.total || 0"
+      :to="
+        (page) => ({
+          query: { page },
+        })
+      "
+    />
   </div>
 </template>
