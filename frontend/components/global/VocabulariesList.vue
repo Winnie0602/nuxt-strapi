@@ -131,9 +131,12 @@ const showChinese = ref(true)
           <UiTableBody
             v-if="filterVocabularies?.length && filterVocabularies?.length > 0"
           >
-            <template v-for="item in filterVocabularies" :key="item.id">
+            <template
+              v-for="(item, index) in filterVocabularies"
+              :key="item.id"
+            >
               <UiTableRow class="h-[58px]">
-                <UiTableCell class="flex items-end font-medium h-full">
+                <UiTableCell class="flex h-full items-end font-medium">
                   <div
                     v-if="textMode === 'both'"
                     v-html="item.html_hiragana"
@@ -145,7 +148,7 @@ const showChinese = ref(true)
                         : item.full_reading
                     }}
                   </div>
-                  <VoiceSpeak :word="item.full_reading" />
+                  <VoiceSpeak :word="item.full_reading" :index="index" />
                 </UiTableCell>
                 <UiTableCell></UiTableCell>
                 <UiTableCell></UiTableCell>
