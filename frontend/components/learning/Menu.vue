@@ -88,7 +88,7 @@
         </div>
         <UiCollapsibleContent class="space-y-2">
           <NuxtLink
-            :to="'/test'"
+            :to="'/my/favorites'"
             class="block rounded-md border px-4 py-3 font-mono text-sm hover:bg-gray-100"
           >
             我的收藏單字

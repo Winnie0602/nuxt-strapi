@@ -21,33 +21,12 @@ const { data } = await useFetch('/api/vocabularies', {
     }
   },
 })
-
-type Favorites = {
-  documentId: string
-  vocabularies: Vocabulary[]
-}
-
-const { data: myFavorites, error } = await useFetch<Favorites>('/api/favorites')
-
-if (error.value?.statusCode === 401) {
-  console.log('token error')
-}
-
-if (error.value?.statusCode === 403) {
-  console.log('you dont have record in DB')
-}
 </script>
 
 <template>
   <div class="flex w-full flex-col items-center">
     <VocabulariesList
       :vocabularies="data?.vocabularies || []"
-      :my-favorites="
-        myFavorites || {
-          documentId: '',
-          vocabularies: [],
-        }
-      "
     />
 
     <UPagination

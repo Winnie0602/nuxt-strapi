@@ -24,17 +24,10 @@ if (error.value?.statusCode === 403) {
 </script>
 
 <template>
-  <div
-    class="flex w-[100vw] space-x-4 px-4 md:w-[calc(100vw-32px)] xl:w-[1280px] xl:space-x-8"
-  >
-    <VocabulariesList
-      :vocabularies="myFavorites?.vocabularies || []"
-      :my-favorites="
-        myFavorites || {
-          documentId: '',
-          vocabularies: [],
-        }
-      "
-    />
+  <div class="flex w-full flex-col items-center">
+    <div class="mb-5 w-full text-left text-4xl font-bold">
+      Favorites List &#128156;&#128153;&#9829;&#128154;
+    </div>
+    <VocabulariesList :vocabularies="myFavorites?.vocabularies || []" />
   </div>
 </template>

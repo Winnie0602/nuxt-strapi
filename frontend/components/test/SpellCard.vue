@@ -7,7 +7,7 @@ const props = defineProps<{
   index: number
 }>()
 
-const emits = defineEmits(['scrollNext'])
+const emits = defineEmits(['answerCompleted'])
 
 // 定義 UiInput 的型別
 type UiInputInstance = {
@@ -42,9 +42,7 @@ const enter = (index: number) => {
         cleanInput.length === answer.length &&
         cleanInput.every((char, index) => char === answer[index])
 
-      if (isCorrect) {
-        emits('scrollNext', 'correct')
-      }
+      emits('answerCompleted', isCorrect ? 'correct' : 'failed')
     }
   } else {
     showToast('請輸入日文字', '日本語の文字を入力してください')
@@ -60,10 +58,12 @@ const enter = (index: number) => {
           <div>
             <!-- 單字／聲音 -->
             <div class="flex items-center">
-              <div class="text-4xl">{{ vocabulary.full_word_jp }}</div>
+              <div class="text-4xl">
+                {{ index + 1 }}. {{ vocabulary.full_word_jp }}
+              </div>
               <VoiceSpeak :word="vocabulary.full_reading" :index="index" />
             </div>
-            {{ vocabulary.full_reading }}
+            <!-- {{ vocabulary.full_reading }} -->
             <UiSeparator class="my-4" />
           </div>
         </UiCardContent>
@@ -72,13 +72,13 @@ const enter = (index: number) => {
         <UiCardFooter class="flex justify-between">
           <div class="flex space-x-2">
             <UiInput
-              v-for="index in vocabulary.full_reading.length"
-              :key="index"
+              v-for="i in vocabulary.full_reading.length"
+              :key="i"
               ref="inputRefs"
-              v-model="inputVal[index]"
+              v-model="inputVal[i]"
               type="text"
               class="h-10 w-10"
-              @keydown.enter="enter(index)"
+              @keydown.enter="enter(i)"
             />
           </div>
         </UiCardFooter>

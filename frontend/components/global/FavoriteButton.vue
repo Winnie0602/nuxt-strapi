@@ -45,11 +45,11 @@ const handleFavorite = async (nowId: string) => {
       if (isLiked.value) {
         arr.push(vocabulariesList.filter((e) => e !== nowId))
         toast.title = '移除收藏成功'
-        toast.description = 'お気に入りを解除しました'
+        toast.description = 'Remove from Favorites'
       } else {
         arr = [...vocabulariesList, nowId]
         toast.title = '新增收藏成功'
-        toast.description = 'データの追加に成功しました'
+        toast.description = 'Add to Favorites'
       }
 
       await $fetch('/api/favorites', {

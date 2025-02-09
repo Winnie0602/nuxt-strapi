@@ -38,8 +38,8 @@ const onSubmit: SubmissionHandler = async (values, actions) => {
   // https://github.com/sidebase/nuxt-auth/issues/493
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error, url }: any = await signIn('credentials', {
-    identifier: 'winnie@gmail.com',
-    password: '123456789',
+    identifier: 'winnie',
+    password: 'Z976200@gmail.com',
     redirect: false,
     callbackUrl: '/',
   })

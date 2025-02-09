@@ -8,14 +8,18 @@ const [emblaRef, emblaApi] = emblaCarouselVue()
 const { data: vocabularies } = await useFetch('/api/vocabularies', {
   transform: (data: { data: Vocabulary[] }) => {
     const filtered = data.data.filter((e) => e.full_word_jp !== e.full_reading)
-    return filtered.sort(() => Math.random() - 0.5).slice(0, 10)
+    return filtered.sort(() => Math.random() - 0.5).slice(0, 5)
   },
 })
 
+console.log(vocabularies.value?.map((e) => e.full_reading))
+
 const score = ref(0)
 const show = ref(false)
+const showAlertType = ref<'correct' | 'failed'>('correct')
 const currentIndex = ref(0) // 目前輪播的索引
 const currentReadingIndex = ref<number | null>(null) // 目前播放發音的卡片索引
+const showQuestionCards = ref(true) // 是否顯示題目卡
 
 // 提供 isReading 狀態
 provide('currentReadingIndex', currentReadingIndex)
@@ -36,12 +40,26 @@ const showAlert = () => {
   }, 1000)
 }
 
+const spellingWrong = ref<string[]>([])
+
 //  滑動到下一張卡片
-const scrollNext = (status: 'correct' | 'failed', index: number) => {
+const answerCompleted = (
+  status: 'correct' | 'failed',
+  index: number,
+  vocabulary: Vocabulary,
+) => {
   if (status === 'correct') {
-    showAlert()
-    emblaApi.value?.scrollNext() // 觸發輪播到下一張
     score.value += 20
+    showAlertType.value = 'correct'
+  } else {
+    spellingWrong.value.push(vocabulary.documentId)
+    showAlertType.value = 'failed'
+  }
+
+  showAlert()
+
+  if (index < 4) {
+    emblaApi.value?.scrollNext() // 觸發輪播到下一張
 
     setTimeout(() => {
       nextTick(() => {
@@ -52,6 +70,10 @@ const scrollNext = (status: 'correct' | 'failed', index: number) => {
         }
       })
     }, 300) // 延遲 300ms，讓 `embla` 先完成滾動
+  } else {
+    setTimeout(() => {
+      showQuestionCards.value = false
+    }, 500)
   }
 }
 
@@ -87,14 +109,18 @@ onMounted(() => {
       <Transition name="alert-slide">
         <UiAlert
           v-if="show"
-          title="Correct answer!"
-          variant="success"
-          icon="lucide:check"
+          :variant="showAlertType === 'correct' ? 'success' : 'destructive'"
+          :title="
+            showAlertType === 'correct' ? 'Correct answer!' : 'Wrong answer!'
+          "
+          :icon="
+            showAlertType === 'correct' ? 'lucide:check' : 'lucide:alert-circle'
+          "
           class="bg-white"
         />
       </Transition>
     </div>
-    <div class="my-4 text-2xl font-bold">Spelling Test</div>
+    <div class="my-4 text-2xl font-bold">Spelling Test &#128214; &#9999;</div>
     <!-- 分數 -->
     <div class="mb-8 flex w-[80%] items-center">
       <UProgress :value="score" :max="100" color="cyan">
@@ -126,18 +152,32 @@ onMounted(() => {
         / 100
       </div>
     </div>
-    <div ref="emblaRef" class="embla w-[500px]">
+    <div v-if="showQuestionCards" ref="emblaRef" class="embla w-[500px]">
       <div class="embla__container">
         <TestSpellCard
           v-for="(vocabulary, index) in vocabularies"
           :key="vocabulary.documentId"
           :vocabulary="vocabulary"
           :index="index"
-          @scroll-next="
-            (status: 'correct' | 'failed') => scrollNext(status, index)
+          @answer-completed="
+            (status: 'correct' | 'failed') =>
+              answerCompleted(status, index, vocabulary)
           "
         />
       </div>
+    </div>
+    <div v-else class="flex w-full flex-col items-center">
+      <div class="mb-3">
+        <div class="font-medium">
+          Your score is
+          <span class="font-bold text-red-500">{{ score }}</span>
+          , review now! &#x25BC;
+        </div>
+      </div>
+      <VocabulariesList
+        :vocabularies="vocabularies || []"
+        :highlights="spellingWrong"
+      />
     </div>
   </div>
 </template>

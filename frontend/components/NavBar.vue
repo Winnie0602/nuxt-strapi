@@ -11,9 +11,9 @@ const menuitems = [
     title: '我的收藏',
     icon: 'ph:heart',
     items: [
-      { title: '單字' },
-      { title: '文章' },
-      { title: '對話' },
+      { title: '單字', path: '/my/favorites' },
+      { title: '文章', path: '/my/favorites' },
+      { title: '對話', path: '/my/favorites' },
       { divider: true },
       { title: 'More', icon: 'ph:plus-circle' },
     ],
@@ -31,7 +31,7 @@ const menuitems = [
   <div>
     <UiNavbar>
       <UiContainer class="flex h-14 items-center justify-between">
-        <NuxtLink to="/" class="font-semibold">My JP Learning</NuxtLink>
+        <NuxtLink to="/" class="font-semibold">Winnie Learning</NuxtLink>
         <nav class="hidden items-center gap-8 sm:flex">
           <UiDropdownMenu>
             <UiDropdownMenuTrigger>
@@ -107,9 +107,10 @@ const menuitems = [
                       :icon="item.icon"
                     />
                     <UiDropdownMenuSubContent>
-                      <template
+                      <NuxtLink
                         v-for="(child, k) in item.items"
                         :key="`child-${k}`"
+                        :to="child.path"
                       >
                         <UiDropdownMenuSeparator v-if="child.divider" />
                         <UiDropdownMenuItem
@@ -117,7 +118,7 @@ const menuitems = [
                           :title="child.title"
                           :icon="child.icon"
                         />
-                      </template>
+                      </NuxtLink>
                     </UiDropdownMenuSubContent>
                   </UiDropdownMenuSub>
                 </template>

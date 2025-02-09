@@ -6,10 +6,25 @@ type Favorites = {
   vocabularies: Vocabulary[]
 }
 
-const props = defineProps<{
-  vocabularies: Vocabulary[]
-  myFavorites: Favorites
-}>()
+const props = withDefaults(
+  defineProps<{
+    vocabularies: Vocabulary[]
+    highlights?: string[]
+  }>(),
+  {
+    highlights: () => [],
+  },
+)
+
+const { data: myFavorites, error } = await useFetch<Favorites>('/api/favorites')
+
+if (error.value?.statusCode === 401) {
+  console.log('token error')
+}
+
+if (error.value?.statusCode === 403) {
+  console.log('you dont have record in DB')
+}
 
 const filterVocabularies = computed(() => {
   if (search.value !== '') {
@@ -22,11 +37,15 @@ const filterVocabularies = computed(() => {
   return props.vocabularies
 })
 
+const route = useRoute()
+
 const textMode = ref<'hanji' | 'hiragana' | 'both'>('both')
 
 const search = ref('')
 
 const showChinese = ref(true)
+
+const showSerachInput = ref(!route.path.includes('spell'))
 
 // const searchHandler = () => {
 //   if (search.value === '') {
@@ -45,6 +64,7 @@ const showChinese = ref(true)
   <div class="w-full">
     <div>
       <UiInput
+        v-if="showSerachInput"
         v-model="search"
         type="text"
         placeholder="Search..."
@@ -135,7 +155,14 @@ const showChinese = ref(true)
               v-for="(item, index) in filterVocabularies"
               :key="item.id"
             >
-              <UiTableRow class="h-[58px]">
+              <UiTableRow
+                class="h-[58px]"
+                :class="
+                  highlights.includes(item.documentId)
+                    ? 'bg-red-200 hover:bg-red-200'
+                    : 'bg-white'
+                "
+              >
                 <UiTableCell class="flex h-full items-end font-medium">
                   <div
                     v-if="textMode === 'both'"
@@ -152,7 +179,13 @@ const showChinese = ref(true)
                 </UiTableCell>
                 <UiTableCell></UiTableCell>
                 <UiTableCell></UiTableCell>
-                <UiTableCell :class="{ 'text-white': !showChinese }">
+                <UiTableCell
+                  :class="{
+                    'text-white': !showChinese,
+                    'text-red-200':
+                      !showChinese && highlights.includes(item.documentId),
+                  }"
+                >
                   {{ item.translate_ch }}
                 </UiTableCell>
                 <UiTableCell class="text-center">
@@ -177,7 +210,6 @@ const showChinese = ref(true)
           </UiTableBody>
         </UiTable>
       </div>
-      <div class="flex w-full justify-center"></div>
     </div>
   </div>
 </template>
