@@ -13,6 +13,7 @@ export default NuxtAuthHandler({
   secret: config.authSecret,
   pages: {
     signIn: '/login',
+    newUser: '/learning/vocabulary',
   },
   providers: [
     // @ts-expect-error You need to use .default here for it to work during SSR. May be fixed via Vite at some point
@@ -26,17 +27,14 @@ export default NuxtAuthHandler({
         const config = useRuntimeConfig()
 
         try {
-          const response = await $fetch(
-            `${config.public.strapiBaseUrl}/auth/local`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: {
-                identifier: credentials.identifier,
-                password: credentials.password,
-              },
+          const response = await $fetch(`${config.strapiBaseUrl}/auth/local`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: {
+              identifier: credentials.identifier,
+              password: credentials.password,
             },
-          )
+          })
 
           if (response?.user && response?.jwt) {
             return { ...response.user, jwt: response.jwt }
