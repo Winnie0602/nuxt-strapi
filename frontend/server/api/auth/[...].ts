@@ -23,17 +23,28 @@ export default NuxtAuthHandler({
         password: { type: 'password' },
       },
       async authorize(credentials: Credentials) {
-        const response = await $fetch(`${config.strapiBaseUrl}/auth/local/`, {
-          method: 'POST',
-          body: JSON.stringify({
-            identifier: credentials.identifier,
-            password: credentials.password,
-          }),
-        })
+        const config = useRuntimeConfig()
 
-        if (response.user) {
-          return { ...response.user, jwt: response.jwt }
-        } else {
+        try {
+          const response = await $fetch(
+            `${config.public.strapiBaseUrl}/auth/local`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: {
+                identifier: credentials.identifier,
+                password: credentials.password,
+              },
+            },
+          )
+
+          if (response?.user && response?.jwt) {
+            return { ...response.user, jwt: response.jwt }
+          } else {
+            throw new Error('Invalid credentials')
+          }
+        } catch (error) {
+          console.error('Login failed:', error)
           return null
         }
       },

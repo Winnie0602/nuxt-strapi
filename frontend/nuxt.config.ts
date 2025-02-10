@@ -31,16 +31,10 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    strapi: {
-      url: process.env.STRAPI_URL,
-    },
     public: {
-      strapi: {
-        url: process.env.STRAPI_URL,
-      },
+      strapiBaseUrl: process.env.STRAPI_BASE_URL || 'http://localhost:1337/api',
     },
     authSecret: process.env.AUTH_SECRET,
-    strapiBaseUrl: process.env.STRAPI_BASE_URL,
   },
 
   routeRules: {
