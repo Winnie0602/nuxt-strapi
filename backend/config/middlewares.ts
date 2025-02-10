@@ -8,7 +8,8 @@ export default [
     config: {
       origin: [
         'http://localhost:3000', // 本地开发时允许的前端请求地址
-        'https://nuxt-strapi-7ztr.onrender.com', // 你部署在 Render 上的 Strapi 地址
+        'https://nuxt-strapi-7ztr.onrender.com', // 你部署在 Render 上的 Strapi 地址,
+        'https://learning-app-frontend-wsdp.onrender.com', // 你部署在 Render 上的 前端專案 地址,
       ],
       methods: ['GET', 'POST', 'PUT', 'DELETE'], // 允许的 HTTP 请求方法
       allowedHeaders: ['Content-Type', 'Authorization'], // 允许的头部信息
