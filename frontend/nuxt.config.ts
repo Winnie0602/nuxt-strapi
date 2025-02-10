@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  auth: {
+    baseURL: `http://localhost:${process.env.PORT || 3000}`
+  },
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
 
