@@ -50,9 +50,7 @@ const onSubmit: SubmissionHandler = async (values, actions) => {
     actions.setFieldError('email', '帳號密碼錯誤')
   } else {
     console.log(url)
-    return navigateTo('https://learning-app-frontend-wsdp.onrender.com', {
-      external: true,
-    })
+    return navigateTo(url, { external: true })
   }
 }
 </script>
