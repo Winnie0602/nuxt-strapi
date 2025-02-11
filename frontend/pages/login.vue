@@ -49,6 +49,7 @@ const onSubmit: SubmissionHandler = async (values, actions) => {
   if (error) {
     actions.setFieldError('email', '帳號密碼錯誤')
   } else {
+    console.log(url)
     return navigateTo(url, { external: true })
   }
 }
