@@ -369,12 +369,12 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiChatRoomChatRoom extends Struct.CollectionTypeSchema {
-  collectionName: 'chat_rooms';
+export interface ApiChatroomChatroom extends Struct.CollectionTypeSchema {
+  collectionName: 'chatrooms';
   info: {
-    displayName: 'Chat Room';
-    pluralName: 'chat-rooms';
-    singularName: 'chat-room';
+    displayName: 'Chatroom';
+    pluralName: 'chatrooms';
+    singularName: 'chatroom';
   };
   options: {
     draftAndPublish: true;
@@ -383,22 +383,22 @@ export interface ApiChatRoomChatRoom extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    description: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::chat-room.chat-room'
+      'api::chatroom.chatroom'
     > &
       Schema.Attribute.Private;
     name: Schema.Attribute.String;
+    owner: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
     publishedAt: Schema.Attribute.DateTime;
-    roomId: Schema.Attribute.UID;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    users: Schema.Attribute.Relation<
-      'manyToMany',
-      'plugin::users-permissions.user'
-    >;
   };
 }
 
@@ -968,10 +968,7 @@ export interface PluginUsersPermissionsUser
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    chat_rooms: Schema.Attribute.Relation<
-      'manyToMany',
-      'api::chat-room.chat-room'
-    >;
+    chatrooms: Schema.Attribute.Relation<'oneToMany', 'api::chatroom.chatroom'>;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
@@ -1023,7 +1020,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::chat-room.chat-room': ApiChatRoomChatRoom;
+      'api::chatroom.chatroom': ApiChatroomChatroom;
       'api::favorite.favorite': ApiFavoriteFavorite;
       'api::message.message': ApiMessageMessage;
       'api::vocabulary.vocabulary': ApiVocabularyVocabulary;

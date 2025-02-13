@@ -71,11 +71,11 @@
       "target": "api::favorite.favorite",
       "mappedBy": "user"
     },
-    "chat_rooms": {
+    "chatrooms": {
       "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::chat-room.chat-room",
-      "mappedBy": "users"
+      "relation": "oneToMany",
+      "target": "api::chatroom.chatroom",
+      "mappedBy": "owner"
     }
   }
 }
