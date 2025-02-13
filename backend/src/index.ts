@@ -6,8 +6,6 @@ export default {
   },
 
   bootstrap({ strapi }: { strapi: any }) {
-    console.log('1111111WebSocket server is starting...')
-
     const io = new Server(strapi.server.httpServer, {
       cors: {
         origin: '*', // 允許所有來源的請求
@@ -16,23 +14,20 @@ export default {
     })
 
     io.on('connection', (socket) => {
-      console.log('User connected:', socket.id)
+      console.log('22222A user connected: ' + socket.id)
 
-      // 加入指定聊天室
-      socket.on('join_room', (roomId) => {
-        socket.join(roomId)
-        console.log(`User joined room: ${roomId}`)
+      // 當收到訊息時，將訊息廣播回所有用戶
+      socket.on('message', async (data) => {
+        io.emit('message', `Echo: ${data}`) // 廣播回傳訊息
       })
 
-      // 接收並廣播訊息
-      socket.on('send_message', async ({ roomId, message, sender }) => {
-        console.log('yes', { roomId, message, sender })
-        io.to(roomId).emit('receive_message', { sender, message })
-      })
-
+      // 監聽斷開連接事件
       socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id)
+        console.log('User disconnected: ' + socket.id)
       })
     })
+
+    // 儲存 io 實例，便於後續使用
+    strapi.io = io
   },
 }

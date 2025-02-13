@@ -9,8 +9,6 @@
     <ul>
       <li v-for="(msg, index) in messages" :key="index">{{ msg }}</li>
     </ul>
-
-    <button @click="add">add</button>
   </div>
 </template>
 
@@ -21,15 +19,7 @@ import { io, type Socket } from 'socket.io-client'
 const messages = ref<string[]>([])
 const message = ref<string>('')
 
-const { data: list } = await useFetch('/api/message')
 
-console.log(list.value)
-
-const add = async () => {
-  await $fetch('/api/message', {
-    method: 'POST',
-  })
-}
 // 宣告一個 socket 變數來儲存 WebSocket 連接
 let socket: Socket
 
