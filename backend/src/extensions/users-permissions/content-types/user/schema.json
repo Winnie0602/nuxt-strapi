@@ -76,12 +76,6 @@
       "relation": "manyToMany",
       "target": "api::chat-room.chat-room",
       "mappedBy": "users"
-    },
-    "messages": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::message.message",
-      "mappedBy": "user"
     }
   }
 }

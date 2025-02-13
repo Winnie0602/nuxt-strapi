@@ -17,7 +17,18 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@vee-validate/nuxt',
     '@samk-dev/nuxt-vcalendar',
+    'nuxt-socket-io',
   ],
+
+  io: {
+    sockets: [
+      {
+        name: 'main', // 前端使用的 socket 名稱
+        url: 'http://localhost:1337', // 後端 WebSocket 伺服器的網址
+        default: true,
+      },
+    ],
+  },
 
   // strapi: {
   //   url: process.env.STRAPI_URL || 'http://localhost:1337',

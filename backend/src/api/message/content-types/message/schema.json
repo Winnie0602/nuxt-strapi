@@ -4,7 +4,8 @@
   "info": {
     "singularName": "message",
     "pluralName": "messages",
-    "displayName": "Message"
+    "displayName": "Message",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -13,21 +14,6 @@
   "attributes": {
     "content": {
       "type": "string"
-    },
-    "timestamp": {
-      "type": "datetime"
-    },
-    "user": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "messages"
-    },
-    "chatRoom": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::chat-room.chat-room",
-      "inversedBy": "messages"
     }
   }
 }
