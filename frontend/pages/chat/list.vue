@@ -1,41 +1,29 @@
-<template>
-  <div>
-    <h1>WebSocket Chat</h1>
-    <input
-      v-model="message"
-      placeholder="Type a message and press enter"
-      @keydown.enter="sendMessage"
-    />
-    <ul>
-      <li v-for="(msg, index) in messages" :key="index">{{ msg }}</li>
-    </ul>
-  </div>
-</template>
-
 <script lang="ts" setup>
 import { io, type Socket } from 'socket.io-client'
+import { ref, onMounted } from 'vue'
 
-// 建立響應式變數來儲存訊息列表和當前訊息
-const messages = ref<string[]>([])
-const message = ref<string>('')
+const socket = io('http://localhost:1337') // 替換為你的後端 URL
+const roomId = ref('')
+const message = ref('')
+const messages = ref<{ sender: string; message: string; socketId: string }[]>(
+  [],
+)
+const joined = ref(false)
+let socketId = ''
 
+const { data: auth, status } = useAuth()
 
-// 宣告一個 socket 變數來儲存 WebSocket 連接
-let socket: Socket
+const username =
+  status.value === 'unauthenticated' ? 'passer' : auth.value?.user.username
 
 onMounted(() => {
-  // 建立 WebSocket 連接
-  socket = io('http://localhost:1337') // 這是你的後端 WebSocket 伺服器 URL
-
-  // 接收到訊息時，將訊息加入訊息列表
-  socket.on('message', (data: string) => {
-    messages.value.push(data)
-    console.log('Connected with socket id:', socket.id)
+  socket.on('connect', () => {
+    socketId = socket.id || ''
+    console.log('Connected with socket id:', socketId)
   })
 
-  // 監聽錯誤
-  socket.on('connect_error', (err: any) => {
-    console.error('Socket connection error: ', err)
+  socket.on('message', (data: { sender: string; message: string; socketId: string }) => {
+    messages.value.push(data)
   })
 
   socket.on('disconnect', () => {
@@ -43,15 +31,61 @@ onMounted(() => {
   })
 })
 
-// 發送訊息到後端
+const joinRoom = () => {
+  if (roomId.value.trim()) {
+    socket.emit('join_room', roomId.value)
+    joined.value = true
+    console.log(`Joined room: ${roomId.value}`)
+  }
+}
+
 const sendMessage = () => {
   if (message.value.trim()) {
-    socket.emit('message', message.value) // 發送訊息到後端
-    message.value = '' // 清空訊息框
+    socket.emit('message', {
+      roomId: roomId.value,
+      message: message.value,
+      username,
+    })
+    message.value = '' // 清空輸入框
   }
 }
 </script>
 
+<template>
+  <div>
+    <h1>WebSocket Chat</h1>
+    <input v-model="roomId" placeholder="Enter Room ID" />
+    <button @click="joinRoom">Join Room</button>
+
+    <div v-if="joined">
+      <input
+        v-model="message"
+        placeholder="Type a message and press enter"
+        @keydown.enter="sendMessage"
+      />
+      <ul>
+        <li
+          v-for="(msg, index) in messages"
+          :key="index"
+          :class="{
+            'message-right': msg.socketId === socketId,
+            'message-left': msg.socketId !== socketId,
+          }"
+        >
+          <strong>{{ msg.socketId === socketId ? 'You' : msg.sender }}:</strong>
+          {{ msg.message }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
 <style scoped>
-/* 在這裡可以添加一些簡單的樣式 */
+.message-left {
+  text-align: left;
+}
+.message-right {
+  text-align: right;
+  color: blue;
+}
 </style>

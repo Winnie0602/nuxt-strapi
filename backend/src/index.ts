@@ -14,20 +14,31 @@ export default {
     })
 
     io.on('connection', (socket) => {
-      console.log('22222A user connected: ' + socket.id)
+      console.log('A user connected: ' + socket.id)
 
-      // 當收到訊息時，將訊息廣播回所有用戶
-      socket.on('message', async (data) => {
-        io.emit('message', `Echo: ${data}`) // 廣播回傳訊息
+      // 用戶加入指定聊天室
+      socket.on('join_room', (roomId) => {
+        socket.join(roomId)
+        const roomSize = io.sockets.adapter.rooms.get(roomId)?.size || 0
+
+        console.log(io.sockets.adapter.rooms.get(roomId)?.size, 'io.sockets.adapter.rooms.get(roomId)?.size')
+        console.log(`User ${socket.id} joined room: ${roomId}`)
+
+        // 廣播房間人數給該房間的所有人
+        io.to(roomId).emit('roomSize', roomSize)
       })
 
-      // 監聽斷開連接事件
+      // 接收訊息並只廣播到該聊天室
+      socket.on('message', ({ roomId, message, username }) => {
+        console.log(`Message from ${socket.id} in room ${roomId}: ${message}`)
+        io.to(roomId).emit('message', { socketId: socket.id, message, sender: username })
+      })
+
       socket.on('disconnect', () => {
         console.log('User disconnected: ' + socket.id)
       })
     })
 
-    // 儲存 io 實例，便於後續使用
-    strapi.io = io
+    strapi.io = io // 儲存 io 實例，便於後續使用
   },
 }
