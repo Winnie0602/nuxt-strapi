@@ -1,9 +1,15 @@
 <script lang="ts" setup>
-import { io, type Socket } from 'socket.io-client'
+import { io } from 'socket.io-client'
 
 definePageMeta({
   layout: 'full-screen',
 })
+
+type RoomInfo = {
+  roomId: string
+  roomDescription: string
+  roomPassword?: string
+}
 
 type Message = { message: string; sender: string; socketId: string }
 
@@ -66,8 +72,6 @@ onMounted(() => {
   socket.on('disconnect', () => {
     console.log('Disconnected from server')
   })
-
-  joinRoom()
 })
 
 const joinRoom = () => {
@@ -76,40 +80,19 @@ const joinRoom = () => {
     console.log(`Joined room: ${roomId.value}`)
   }
 }
+
+const newChatroom = (roomInfo: RoomInfo) => {
+  socket.emit('join_room', roomInfo.roomId)
+}
 </script>
 
 <template>
   <div
     class="flex h-[calc(100dvh-56px-64px)] w-full rounded-md border-[1px] border-black bg-slate-50"
   >
-    <div class="w-[30%] border-r-[1px] border-black px-6 py-5">
-      <UInput
-        icon="i-heroicons-magnifying-glass-20-solid"
-        size="sm"
-        color="white"
-        :trailing="false"
-        placeholder="Search..."
-        class="w-full"
-      />
-      <div class="mt-6 space-y-4">
-        <div class="border-b-[1px] border-gray-200 pb-3">
-          <div class="text-xl font-bold">第一個聊天室</div>
-          <div class="text-sm text-gray-900">第一個聊天室的敘述</div>
-        </div>
-        <div class="border-b-[1px] border-gray-200 pb-3">
-          <div class="text-xl font-bold">第二個聊天室</div>
-          <div class="text-sm text-gray-900">第二個聊天室的敘述</div>
-        </div>
-        <div class="border-b-[1px] border-gray-200 pb-3">
-          <div class="text-xl font-bold">第三個聊天室</div>
-          <div class="text-sm text-gray-900">第三個聊天室的敘述</div>
-        </div>
-        <div class="border-b-[1px] border-gray-200 pb-3">
-          <div class="text-xl font-bold">第4個聊天室</div>
-          <div class="text-sm text-gray-900">第4個聊天室的敘述</div>
-        </div>
-      </div>
-    </div>
+    <ChatRoomList
+      @new-chatroom="(roomInfo: RoomInfo) => newChatroom(roomInfo)"
+    />
     <div class="w-full">
       <div
         class="flex h-16 w-full items-center justify-between bg-slate-300 px-6 text-xl font-medium"
