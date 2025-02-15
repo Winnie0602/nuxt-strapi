@@ -1,12 +1,12 @@
 import { Server } from 'socket.io'
 
+// 聊天室列表
 const roomsInfo = new Map<string, { roomName: string; roomDescription: string; userCount: number }>()
 
-export default {
-  register() {
-    console.log('WebSocket register function is running...')
-  },
+// 每個房間的歷史訊息
+const roomsMessages = new Map<string, { sender: string; message: string; socketId: string }[]>()
 
+export default {
   bootstrap({ strapi }: { strapi: any }) {
     const io = new Server(strapi.server.httpServer, {
       cors: {
@@ -15,77 +15,100 @@ export default {
       },
     })
 
-    // 儲存每個房間的歷史訊息
-    const roomsMessages = new Map()
-
     io.on('connection', (socket) => {
-      console.log('A user connected: ' + socket.id)
-
       // 用戶加入聊天室
       socket.on('join_room', ({ roomId, roomName, roomDescription }) => {
-        // 讓用戶離開所有已加入的房間，避免錯亂
-        const rooms = Array.from(socket.rooms)
-
         socket.join(roomId)
 
         // 發送房間歷史訊息
-        const history = roomsMessages.get(roomId) || []
-        socket.emit('history', { roomId, messages: history })
+        sendRoomHistory(socket, roomId)
 
-        // 如果房間不存在，新增房間資訊
-        if (!roomsInfo.has(roomId)) {
-          roomsInfo.set(roomId, { roomName, roomDescription, userCount: 0 })
-        }
+        // 更新房間資訊或初始化
+        handleRoomInfo(roomId, roomName, roomDescription)
 
-        // 更新房間人數
-        const room = roomsInfo.get(roomId)
-        if (room) {
-          room.userCount = io.sockets.adapter.rooms.get(roomId)?.size || 0
-        }
-
-        // 廣播該聊天室內的人數
-        io.to(roomId).emit('roomSize', room?.userCount || 0)
+        // 廣播房間人數
+        broadcastRoomSize(roomId)
 
         // 更新聊天室列表並廣播給所有人
         broadcastRooms()
       })
 
-      // 接收訊息並只廣播到該聊天室
+      // 接收訊息並廣播到該聊天室
       socket.on('message', ({ roomId, message, username }) => {
         // 儲存訊息至歷史紀錄
-        if (!roomsMessages.has(roomId)) {
-          roomsMessages.set(roomId, [])
-        }
-        const history = roomsMessages.get(roomId)
-        history.push({ sender: username, message, socketId: socket.id })
+        saveMessageToHistory(roomId, message, username, socket.id)
 
         // 廣播訊息到該聊天室
-        io.to(roomId).emit('message', { socketId: socket.id, message, sender: username })
+        broadcastMessage(roomId, message, username, socket.id)
       })
 
-      // 當用戶斷線時，檢查房間是否仍然存在
+      // 當用戶斷線時，更新房間資訊並清理
       socket.on('disconnect', () => {
         console.log('User disconnected: ' + socket.id)
         setTimeout(() => {
-          // 更新所有房間人數
-          roomsInfo.forEach((room, roomId) => {
-            const userCount = io.sockets.adapter.rooms.get(roomId)?.size || 0
-            if (userCount === 0) {
-              roomsInfo.delete(roomId) // 如果房間沒人，則移除
-            } else {
-              room.userCount = userCount
-            }
-          })
+          // 清理無人房間
+          cleanupEmptyRooms()
 
           broadcastRooms()
-        }, 1000) // 等待一秒後再廣播，以確保房間數據已更新
+        }, 1000)
       })
     })
+
+    // **發送房間歷史訊息**
+    function sendRoomHistory(socket: any, roomId: string) {
+      const history = roomsMessages.get(roomId) || []
+      socket.emit('history', { roomId, messages: history })
+    }
+
+    // **處理房間資訊**
+    function handleRoomInfo(roomId: string, roomName: string, roomDescription: string) {
+      if (!roomsInfo.has(roomId)) {
+        roomsInfo.set(roomId, { roomName, roomDescription, userCount: 0 })
+      }
+
+      // 更新房間人數
+      const room = roomsInfo.get(roomId)
+      if (room) {
+        room.userCount = io.sockets.adapter.rooms.get(roomId)?.size || 0
+      }
+    }
+
+    // **廣播房間人數**
+    function broadcastRoomSize(roomId: string) {
+      const room = roomsInfo.get(roomId)
+      io.to(roomId).emit('roomSize', room?.userCount || 0)
+    }
+
+    // **儲存訊息至歷史紀錄**
+    function saveMessageToHistory(roomId: string, message: string, username: string, socketId: string) {
+      if (!roomsMessages.has(roomId)) {
+        roomsMessages.set(roomId, [])
+      }
+      const history = roomsMessages.get(roomId)
+      history.push({ sender: username, message, socketId })
+    }
+
+    // **廣播訊息到該聊天室**
+    function broadcastMessage(roomId: string, message: string, username: string, socketId: string) {
+      io.to(roomId).emit('message', { socketId, message, sender: username })
+    }
+
+    // **清理無人房間**
+    function cleanupEmptyRooms() {
+      roomsInfo.forEach((room, roomId) => {
+        const userCount = io.sockets.adapter.rooms.get(roomId)?.size || 0
+        if (userCount === 0) {
+          roomsInfo.delete(roomId) // 如果房間沒人，則移除
+        } else {
+          room.userCount = userCount
+        }
+      })
+    }
 
     // **廣播所有聊天室資訊**
     function broadcastRooms() {
       const rooms = Array.from(roomsInfo.entries()).map(([roomId, room]) => ({
-        id: roomId,
+        roomId,
         roomName: room.roomName,
         roomDescription: room.roomDescription,
         userCount: room.userCount,

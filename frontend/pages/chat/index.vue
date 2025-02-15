@@ -10,6 +10,7 @@ type RoomInfo = {
   roomName: string
   roomDescription: string
   roomPassword?: string
+  userCount: number
 }
 
 type Message = { message: string; sender: string; socketId: string }
@@ -31,7 +32,7 @@ const userCount = ref(0) // socket room人數
 
 let socketId = '' // 該視窗socket ID
 
-const roomsList = ref<[]>([])
+const roomsList = ref<RoomInfo[]>([])
 
 // 監聽房間人數變化
 socket.on('roomSize', (size: number) => {
@@ -59,15 +60,9 @@ const scrollToBottom = async () => {
   }
 }
 
-const newChatroom = (roomInfo: RoomInfo) => {
-  socket.emit('join_room', roomInfo)
-}
-
 watch(nowRoomInfo, () => {
   // 清空當前聊天室訊息
   if (nowRoomInfo.value?.roomId) {
-    console.log(11)
-
     // 發送加入聊天室的請求，後端會回傳歷史訊息
     socket.emit('join_room', nowRoomInfo.value)
   }
@@ -79,31 +74,20 @@ onMounted(() => {
   })
 
   // 接收訊息，並放到前端訊息陣列
-  socket.on(
-    'message',
-    (data: { sender: string; message: string; socketId: string }) => {
-      const roomId = nowRoomInfo.value?.roomId
-      console.log({ roomId })
-      if (roomId) {
-        messages.value[roomId].push(data)
-      }
-      scrollToBottom()
-    },
-  )
+  socket.on('message', (data: Message) => {
+    const roomId = nowRoomInfo.value?.roomId
+    if (roomId) {
+      messages.value[roomId].push(data)
+    }
+    scrollToBottom()
+  })
 
   // 監聽歷史訊息
-  socket.on(
-    'history',
-    (data: {
-      roomId: string
-      messages: { sender: string; message: string; socketId: string }[]
-    }) => {
-      messages.value[data.roomId] = data.messages
-      console.log(messages.value)
-    },
-  )
+  socket.on('history', (data: { roomId: string; messages: Message[] }) => {
+    messages.value[data.roomId] = data.messages
+  })
 
-  socket.on('room_list', (updatedRooms) => {
+  socket.on('room_list', (updatedRooms: RoomInfo[]) => {
     roomsList.value = updatedRooms
   })
 
@@ -124,7 +108,7 @@ onUnmounted(() => {
     <ChatRoomList
       v-model="nowRoomInfo"
       :rooms-list="roomsList"
-      @new-chatroom="(roomInfo: RoomInfo) => newChatroom(roomInfo)"
+      @new-chatroom="(roomInfo: RoomInfo) => (nowRoomInfo = roomInfo)"
     />
     <div class="w-full">
       <div
