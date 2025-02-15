@@ -2,7 +2,7 @@
 import { speak } from '~/utils/speak'
 import { inject } from 'vue'
 
-const props = defineProps<{ word: string; index: number }>()
+const props = defineProps<{ word: string; index: number; lang?: string }>()
 const currentReadingIndex = inject<Ref<number | null>>(
   'currentReadingIndex',
   ref(null),
@@ -10,10 +10,18 @@ const currentReadingIndex = inject<Ref<number | null>>(
 
 const playWord = () => {
   currentReadingIndex.value = props.index
-  speak(props.word, () => {
-    currentReadingIndex.value = null
-  })
+
+  speak(
+    props.word,
+    () => {
+      currentReadingIndex.value = null
+    },
+    props.lang,
+  )
 }
+
+// 暴露方法給外面用
+defineExpose({ playWord })
 </script>
 
 <template>

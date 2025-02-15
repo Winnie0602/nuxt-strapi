@@ -1,13 +1,17 @@
-export const speak = (word: string, onEnd?: () => void) => {
+export const speak = (
+  word: string,
+  onEnd?: () => void,
+  lang: string = 'ja-JP',
+) => {
   const utterThis = new SpeechSynthesisUtterance(word)
-  utterThis.onend = () => {
-    if (onEnd) onEnd() // 播放結束時執行回調函數
-  }
 
-  utterThis.lang = 'ja-JP'
-  utterThis.rate = 0.5
-
-  console.log(utterThis)
+  utterThis.lang = lang
+  utterThis.rate = 0.8
 
   window.speechSynthesis.speak(utterThis)
+
+  utterThis.onend = () => {
+    console.log('end')
+    if (onEnd) onEnd() // 播放結束時執行回調函數
+  }
 }

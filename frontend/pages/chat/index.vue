@@ -1,5 +1,10 @@
 <script lang="ts" setup>
 import { io } from 'socket.io-client'
+import type { Language } from '~/types/type'
+import { VoiceLanguage, GoogleLanguage } from '~/types/type'
+import VoiceSpeak from '~/components/global/VoiceSpeak.vue'
+
+const voiceSpeakRef = ref<InstanceType<typeof VoiceSpeak>[] | null>(null)
 
 definePageMeta({
   layout: 'full-screen',
@@ -13,7 +18,13 @@ type RoomInfo = {
   userCount: number
 }
 
-type Message = { message: string; sender: string; socketId: string }
+type Message = {
+  socketId: string
+  sender: string
+  message: string
+  translatedMessage: string
+  targetLang: VoiceLanguage
+}
 
 const { data: auth, status } = useAuth()
 
@@ -29,9 +40,17 @@ const nowRoomInfo = ref<RoomInfo>()
 const inputMessage = ref('') // input訊息框框
 const messages = ref<{ [roomId: string]: Message[] }>({})
 
+const isVolumeOpen = ref(true)
+
 let socketId = '' // 該視窗socket ID
 
 const roomsList = ref<RoomInfo[]>([])
+
+const language = ref<Language>({
+  googleSourceLanguage: GoogleLanguage.TraditionalChinese,
+  googleTargetLanguage: GoogleLanguage.English,
+  voiceLanguage: VoiceLanguage.English,
+})
 
 // 發送訊息給socket server
 const submitMessage = () => {
@@ -40,6 +59,8 @@ const submitMessage = () => {
       roomId: nowRoomInfo.value?.roomId,
       message: inputMessage.value,
       username,
+      sourceLang: language.value.googleSourceLanguage, // 設定原語言，例：中文
+      targetLang: language.value.googleTargetLanguage, // 設定目標語言，例：日文
     })
   }
 
@@ -47,8 +68,7 @@ const submitMessage = () => {
 }
 
 // 滾動到底部功能
-const scrollToBottom = async () => {
-  await nextTick() // 確保 DOM 更新後再滾動
+const scrollToBottom = () => {
   if (chatContainer.value) {
     chatContainer.value.scrollTop = chatContainer.value.scrollHeight
   }
@@ -68,12 +88,19 @@ onMounted(() => {
   })
 
   // 接收訊息，並放到前端訊息陣列
-  socket.on('message', (data: Message) => {
+  socket.on('message', async (data: Message) => {
     const roomId = nowRoomInfo.value?.roomId
     if (roomId) {
       messages.value[roomId].push(data)
+
+      await nextTick() // 確保 DOM 更新後再滾動
+
+      scrollToBottom()
+
+      if (voiceSpeakRef.value) {
+        voiceSpeakRef.value[messages.value[roomId].length - 1].playWord()
+      }
     }
-    scrollToBottom()
   })
 
   // 監聽歷史訊息
@@ -102,23 +129,49 @@ onUnmounted(() => {
     <ChatRoomList
       v-model="nowRoomInfo"
       :rooms-list="roomsList"
+      class="hidden md:block"
       @new-chatroom="(roomInfo: RoomInfo) => socket.emit('join_room', roomInfo)"
     />
     <div class="w-full">
       <div
-        class="flex h-16 w-full items-center justify-between bg-slate-300 px-6 text-xl font-medium"
+        class="flex h-16 w-full items-center justify-between rounded-t-md bg-slate-300 px-6 text-xl font-medium"
       >
-        {{
-          nowRoomInfo
-            ? `${nowRoomInfo?.roomName} ( ${nowRoomInfo?.userCount} )`
-            : '尚未加入聊天室'
-        }}
         <div class="flex items-center">
-          <Icon name="icon:search" mode="svg" class="h-6 w-6" />
-          <Icon name="icon:dot-menu" mode="svg" class="h-6 w-6" />
+          {{
+            nowRoomInfo
+              ? `${nowRoomInfo?.roomName} ( ${roomsList.filter((e) => e.roomId === nowRoomInfo?.roomId)[0].userCount} )`
+              : '尚未加入聊天室'
+          }}
+          <div v-if="nowRoomInfo" class="ml-2">
+            <Icon
+              :name="`icon:${isVolumeOpen ? 'volume' : 'mute'}`"
+              mode="svg"
+              class="h-5 w-5 cursor-pointer"
+              @click="isVolumeOpen = !isVolumeOpen"
+            />
+          </div>
+        </div>
+        <div class="flex items-center md:hidden">
+          <UPopover :popper="{ arrow: true, placement: 'bottom-start' }">
+            <UButton
+              color="white"
+              trailing-icon="i-heroicons-chevron-down-20-solid"
+            />
+
+            <template #panel>
+              <div class="h-[60vh] p-4">
+                <ChatRoomList
+                  v-model="nowRoomInfo"
+                  :rooms-list="roomsList"
+                  @new-chatroom="
+                    (roomInfo: RoomInfo) => socket.emit('join_room', roomInfo)
+                  "
+                />
+              </div>
+            </template>
+          </UPopover>
         </div>
       </div>
-      <div></div>
       <div
         ref="chatContainer"
         class="h-[calc(100%-64px-72px)] overflow-y-auto px-8 py-5"
@@ -132,25 +185,43 @@ onUnmounted(() => {
             :class="message.socketId === socketId ? 'self-end' : 'self-start'"
           >
             <div
-              class="mb-1 text-sm"
-              :class="{ 'text-right': message.socketId === socketId }"
+              class="mb-1 flex text-sm"
+              :class="{ 'justify-end': message.socketId === socketId }"
             >
-              {{ message.socketId === socketId ? 'You' : message.sender }}
+              <div class="flex space-x-2">
+                <VoiceSpeak
+                  v-if="isVolumeOpen"
+                  ref="voiceSpeakRef"
+                  :word="message.translatedMessage"
+                  :lang="message.targetLang"
+                  :index="index"
+                />
+                {{ message.socketId === socketId ? 'You' : message.sender }}
+              </div>
             </div>
-            <div
-              class="rounded border-[1px] border-gray-500 bg-white px-3 py-1"
-            >
-              {{ message.message }}
+            <div class="rounded border-[1px] border-gray-500 bg-white">
+              <div class="px-3 py-1">{{ message.message }}</div>
+              <div
+                class="rounded-b border-t-[1px] border-gray-500 bg-indigo-200 px-3 py-1"
+              >
+                {{ message.translatedMessage }}
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="w-full px-5 py-4">
+      <div class="flex w-full px-5 py-4">
+        <ChatLanguageButton
+          :disabled="nowRoomInfo === undefined"
+          :language="language"
+          @change-lang="(copy: Language) => (language = copy)"
+        />
         <UInput
           v-model="inputMessage"
           color="white"
           variant="outline"
-          placeholder="Search..."
+          :disabled="nowRoomInfo === undefined"
+          placeholder="Text Something..."
           class="h-10 w-full"
           @keyup.enter="submitMessage"
         />

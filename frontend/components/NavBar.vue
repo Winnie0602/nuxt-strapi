@@ -31,7 +31,9 @@ const menuitems = [
   <div>
     <UiNavbar>
       <UiContainer class="flex h-14 items-center justify-between">
-        <NuxtLink to="/" class="font-semibold">Winnie Learning</NuxtLink>
+        <NuxtLink to="/" class="font-semibold">
+          Winnie Learning &#x1F34F; &#x1F352; &#x1F347;
+        </NuxtLink>
         <nav class="hidden items-center gap-8 sm:flex">
           <UiDropdownMenu>
             <UiDropdownMenuTrigger>

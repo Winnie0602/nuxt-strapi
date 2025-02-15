@@ -1,10 +1,16 @@
 import { Server } from 'socket.io'
 
 // 聊天室列表
-const roomsInfo = new Map<string, { roomName: string; roomDescription: string; userCount: number }>()
+const roomsInfo = new Map<
+  string,
+  { roomName: string; roomDescription: string; userCount: number; roomPassword: string }
+>()
 
 // 每個房間的歷史訊息
-const roomsMessages = new Map<string, { sender: string; message: string; socketId: string }[]>()
+const roomsMessages = new Map<
+  string,
+  { sender: string; message: string; socketId: string; translatedMessage?: string; targetLang: string }[]
+>()
 
 export default {
   bootstrap({ strapi }: { strapi: any }) {
@@ -17,26 +23,29 @@ export default {
 
     io.on('connection', (socket) => {
       // 用戶加入聊天室
-      socket.on('join_room', ({ roomId, roomName, roomDescription }) => {
+      socket.on('join_room', ({ roomId, roomName, roomDescription, roomPassword }) => {
         socket.join(roomId)
 
         // 發送房間歷史訊息
         sendRoomHistory(socket, roomId)
 
         // 更新房間資訊或初始化
-        handleRoomInfo(roomId, roomName, roomDescription)
+        handleRoomInfo(roomId, roomName, roomDescription, roomPassword)
 
         // 更新聊天室列表並廣播給所有人
         broadcastRooms()
       })
 
       // 接收訊息並廣播到該聊天室
-      socket.on('message', ({ roomId, message, username }) => {
+      socket.on('message', async ({ roomId, message, username, sourceLang, targetLang }) => {
+        // 呼叫 Google Translate API 進行翻譯
+        const translatedMessage = await translateMessage(message, sourceLang, targetLang)
+
         // 儲存訊息至歷史紀錄
-        saveMessageToHistory(roomId, message, username, socket.id)
+        await saveMessageToHistory(roomId, message, username, socket.id, translatedMessage, targetLang)
 
         // 廣播訊息到該聊天室
-        broadcastMessage(roomId, message, username, socket.id)
+        broadcastMessage(roomId, message, username, socket.id, translatedMessage, targetLang)
       })
 
       // 當用戶斷線時，更新房間資訊並清理
@@ -58,9 +67,9 @@ export default {
     }
 
     // **處理房間資訊**
-    function handleRoomInfo(roomId: string, roomName: string, roomDescription: string) {
+    function handleRoomInfo(roomId: string, roomName: string, roomDescription: string, roomPassword: string) {
       if (!roomsInfo.has(roomId)) {
-        roomsInfo.set(roomId, { roomName, roomDescription, userCount: 0 })
+        roomsInfo.set(roomId, { roomName, roomDescription, userCount: 0, roomPassword })
       }
 
       // 更新房間人數
@@ -71,17 +80,33 @@ export default {
     }
 
     // **儲存訊息至歷史紀錄**
-    function saveMessageToHistory(roomId: string, message: string, username: string, socketId: string) {
+    async function saveMessageToHistory(
+      roomId: string,
+      message: string,
+      username: string,
+      socketId: string,
+      translatedMessage: string,
+      targetLang: string
+    ) {
+      // 記錄原始訊息
       if (!roomsMessages.has(roomId)) {
         roomsMessages.set(roomId, [])
       }
       const history = roomsMessages.get(roomId)
-      history.push({ sender: username, message, socketId })
+
+      history.push({ sender: username, message, socketId, translatedMessage, targetLang })
     }
 
     // **廣播訊息到該聊天室**
-    function broadcastMessage(roomId: string, message: string, username: string, socketId: string) {
-      io.to(roomId).emit('message', { socketId, message, sender: username })
+    function broadcastMessage(
+      roomId: string,
+      message: string,
+      username: string,
+      socketId: string,
+      translatedMessage: string,
+      targetLang: string
+    ) {
+      io.to(roomId).emit('message', { socketId, message, sender: username, translatedMessage, targetLang })
     }
 
     // **清理無人房間**
@@ -102,9 +127,43 @@ export default {
         roomId,
         roomName: room.roomName,
         roomDescription: room.roomDescription,
+        roomPassword: room.roomPassword,
         userCount: room.userCount,
       }))
       io.emit('room_list', rooms) // 廣播給所有連線的客戶端
+    }
+
+    // **Google Translate API 返回資料的型別**
+    interface TranslateResponse {
+      data: {
+        translations: Array<{
+          translatedText: string
+        }>
+      }
+    }
+
+    // **使用 Google Translate API 進行翻譯**
+    async function translateMessage(message: string, sourceLang: string, targetLang: string): Promise<string> {
+      const url = `https://translation.googleapis.com/language/translate/v2?key=${process.env.GOOGLE_API_KEY}`
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          q: message,
+          source: sourceLang,
+          target: targetLang,
+        }),
+      })
+
+      // 檢查 API 請求是否成功
+      if (!response.ok) {
+        return message // 若翻譯失敗，返回原訊息
+      }
+
+      const data = (await response.json()) as TranslateResponse
+      return data.data?.translations?.[0]?.translatedText || message
+
+      // return message
     }
 
     strapi.io = io // 儲存 io 實例，便於後續使用

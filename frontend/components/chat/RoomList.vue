@@ -11,9 +11,13 @@ type RoomInfo = {
   userCount?: number
 }
 
+const search = ref('')
+
 const nowRoomInfo = defineModel<RoomInfo>()
 
 const isModalOpen = ref(false)
+
+const modalType = ref<'newRoom' | 'enterRoom'>('newRoom')
 
 const openModal = () => {
   isModalOpen.value = true
@@ -37,11 +41,49 @@ const newChatroom = () => {
   roomDescription.value = ''
   roomPassword.value.length = 0
 }
+
+const enterRoom = (room: RoomInfo) => {
+  if (room.roomPassword && room.roomPassword?.length > 0) {
+    // 開啟密碼輸入模態框
+    isModalOpen.value = true
+    modalType.value = 'enterRoom'
+  } else {
+    // 直接進入聊天室（不需要密碼）
+    nowRoomInfo.value = { ...room, roomId: room.roomName }
+  }
+
+  nowRoomInfo.value = { ...room, roomId: room.roomName }
+}
+
+// 監聽 roomPassword 的變化，當密碼輸入完成後進行檢查
+watch(roomPassword, (newPassword) => {
+  const currentRoom = nowRoomInfo.value
+
+  if (
+    currentRoom?.roomPassword &&
+    newPassword.length === currentRoom.roomPassword.length
+  ) {
+    // 密碼輸入完成，進行比較
+    const enteredPassword = newPassword.join('') // 將密碼陣列轉換為字串
+    if (enteredPassword === currentRoom.roomPassword) {
+      // 密碼正確，進入聊天室
+      showToast('密碼正確', '')
+      nowRoomInfo.value = { ...currentRoom, roomId: currentRoom.roomName }
+      isModalOpen.value = false // 關閉密碼輸入框
+    } else {
+      // 密碼錯誤，顯示錯誤提示或其他處理
+      showToast('密碼錯誤，請再試一次。', '')
+    }
+  }
+})
 </script>
 
 <template>
-  <div class="h-full w-[30%] border-r-[1px] border-black px-6 py-5">
+  <div
+    class="h-full w-full border-black px-4 py-2 md:w-[30%] md:border-r-[1px] md:px-6 md:py-5"
+  >
     <UInput
+      v-model="search"
       icon="i-heroicons-magnifying-glass-20-solid"
       size="sm"
       color="white"
@@ -52,10 +94,10 @@ const newChatroom = () => {
     <div class="mt-6 flex h-[calc(100%-24px-32px)] flex-col justify-between">
       <div class="block h-[calc(100%)] space-y-4">
         <div
-          v-for="room in roomsList"
+          v-for="room in roomsList.filter((e) => e.roomName.includes(search))"
           :key="room.roomId"
           class="cursor-pointer border-b-[1px] border-gray-200 pb-3"
-          @click="nowRoomInfo = { ...room, roomId: room.roomName }"
+          @click="enterRoom(room)"
         >
           <div class="flex items-center text-xl font-bold">
             {{ room.roomName }}
@@ -67,7 +109,12 @@ const newChatroom = () => {
         </div>
       </div>
       <div class="flex space-x-4">
-        <button class="button" @click="openModal()">新增聊天室</button>
+        <button
+          class="button text-base font-normal"
+          @click="() => (openModal(), (modalType = 'newRoom'))"
+        >
+          新增聊天室
+        </button>
       </div>
     </div>
     <UModal v-model="isModalOpen">
@@ -82,7 +129,7 @@ const newChatroom = () => {
             <h3
               class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
             >
-              創建聊天室
+              {{ modalType === 'newRoom' ? '創建聊天室' : '請輸入聊天室密碼' }}
             </h3>
             <UButton
               color="gray"
@@ -94,7 +141,7 @@ const newChatroom = () => {
           </div>
         </template>
 
-        <div>
+        <div v-if="modalType === 'newRoom'">
           <div class="mb-2 text-sm">聊天室名稱：</div>
           <UInput
             v-model="roomName"
@@ -114,6 +161,13 @@ const newChatroom = () => {
           <div class="mb-2 text-sm">設定通關密碼(可選)</div>
           <UiPinInput v-model="roomPassword" placeholder="0" class="mb-5" />
           <button class="button" @click="newChatroom">創建聊天室！</button>
+        </div>
+        <div v-else>
+          <UiPinInput
+            v-model="roomPassword"
+            placeholder="0"
+            class="mx-auto mb-5"
+          />
         </div>
       </UCard>
     </UModal>
