@@ -1,27 +1,40 @@
 <script setup lang="ts">
 const emit = defineEmits(['newChatroom'])
 
-const isModalOpen = ref(false)
+defineProps<{ roomsList: RoomInfo[] }>()
 
-const modalType = ref<'add' | 'join'>('add')
-
-const openModal = (type: 'add' | 'join') => {
-  isModalOpen.value = true
-  modalType.value = type
+type RoomInfo = {
+  roomId: string
+  roomName: string
+  roomDescription: string
+  roomPassword?: string
 }
 
-const roomId = ref('')
+const nowRoomInfo = defineModel<RoomInfo>()
+
+const isModalOpen = ref(false)
+
+const openModal = () => {
+  isModalOpen.value = true
+}
+
+const roomName = ref('')
 const roomDescription = ref('')
 const roomPassword = ref<string[]>([])
 
 const newChatroom = () => {
   emit('newChatroom', {
-    roomId: roomId.value,
+    roomId: roomName.value,
+    roomName: roomName.value,
     roomDescription: roomDescription.value,
     roomPassword: roomPassword.value.join(''),
   })
 
   isModalOpen.value = false
+
+  roomName.value = ''
+  roomDescription.value = ''
+  roomPassword.value.length = 0
 }
 </script>
 
@@ -37,26 +50,18 @@ const newChatroom = () => {
     />
     <div class="mt-6 flex h-[calc(100%-24px-32px)] flex-col justify-between">
       <div class="block h-[calc(100%)] space-y-4">
-        <div class="border-b-[1px] border-gray-200 pb-3">
-          <div class="text-xl font-bold">第一個聊天室</div>
-          <div class="text-sm text-gray-900">第一個聊天室的敘述</div>
-        </div>
-        <div class="border-b-[1px] border-gray-200 pb-3">
-          <div class="text-xl font-bold">第二個聊天室</div>
-          <div class="text-sm text-gray-900">第二個聊天室的敘述</div>
-        </div>
-        <div class="border-b-[1px] border-gray-200 pb-3">
-          <div class="text-xl font-bold">第三個聊天室</div>
-          <div class="text-sm text-gray-900">第三個聊天室的敘述</div>
-        </div>
-        <div class="border-b-[1px] border-gray-200 pb-3">
-          <div class="text-xl font-bold">第4個聊天室</div>
-          <div class="text-sm text-gray-900">第4個聊天室的敘述</div>
+        <div
+          v-for="room in roomsList"
+          :key="room.roomId"
+          class="cursor-pointer border-b-[1px] border-gray-200 pb-3"
+          @click="nowRoomInfo = { ...room, roomId: room.roomName }"
+        >
+          <div class="text-xl font-bold">{{ room.roomName }}</div>
+          <div class="text-sm text-gray-900">{{ room.roomDescription }}</div>
         </div>
       </div>
       <div class="flex space-x-4">
-        <button class="button" @click="openModal('add')">新增聊天室</button>
-        <button class="button" @click="openModal('join')">加入聊天室</button>
+        <button class="button" @click="openModal()">新增聊天室</button>
       </div>
     </div>
     <UModal v-model="isModalOpen">
@@ -71,7 +76,7 @@ const newChatroom = () => {
             <h3
               class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
             >
-              {{ modalType === 'add' ? '創建聊天室' : '進入聊天室' }}
+              創建聊天室
             </h3>
             <UButton
               color="gray"
@@ -84,42 +89,25 @@ const newChatroom = () => {
         </template>
 
         <div>
-          <div class="mb-2 text-sm">
-            {{
-              modalType === 'add'
-                ? '聊天室名稱：'
-                : '請輸入要進入的聊天室名稱：'
-            }}
-          </div>
+          <div class="mb-2 text-sm">聊天室名稱：</div>
           <UInput
-            v-model="roomId"
+            v-model="roomName"
             color="gray"
             variant="outline"
             placeholder="Default Name"
             class="mb-5"
           />
-          <div v-if="modalType === 'add'" class="mb-2 text-sm">
-            聊天室描述：
-          </div>
+          <div class="mb-2 text-sm">聊天室描述：</div>
           <UInput
-            v-if="modalType === 'add'"
             v-model="roomDescription"
             color="gray"
             variant="outline"
             placeholder="Default Description"
             class="mb-5"
           />
-          <div class="mb-2 text-sm">
-            {{
-              modalType === 'add'
-                ? '設定通關密碼(可選)：'
-                : '輸入通關密碼(可選)：'
-            }}
-          </div>
+          <div class="mb-2 text-sm">設定通關密碼(可選)</div>
           <UiPinInput v-model="roomPassword" placeholder="0" class="mb-5" />
-          <button class="button" @click="newChatroom">
-            {{ modalType === 'add' ? '創建聊天室！' : '進入聊天室！' }}
-          </button>
+          <button class="button" @click="newChatroom">創建聊天室！</button>
         </div>
       </UCard>
     </UModal>

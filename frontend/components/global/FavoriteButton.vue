@@ -27,7 +27,7 @@ const isLiked = ref(
 
 const handleFavorite = async (nowId: string) => {
   if (status.value === 'unauthenticated') {
-    alert('you should loggin')
+    showToast('請先登入', '登入後方可使用收藏功能')
 
     return
   }

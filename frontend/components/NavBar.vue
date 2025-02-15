@@ -59,6 +59,9 @@ const menuitems = [
               <UiDropdownMenuItem>
                 <NuxtLink to="/learning/time">時間副詞</NuxtLink>
               </UiDropdownMenuItem>
+              <UiDropdownMenuItem>
+                <NuxtLink to="/chat">多國聊天室</NuxtLink>
+              </UiDropdownMenuItem>
             </UiDropdownMenuContent>
           </UiDropdownMenu>
 

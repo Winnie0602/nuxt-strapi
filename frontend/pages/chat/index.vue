@@ -7,6 +7,7 @@ definePageMeta({
 
 type RoomInfo = {
   roomId: string
+  roomName: string
   roomDescription: string
   roomPassword?: string
 }
@@ -21,13 +22,16 @@ const username =
   status.value === 'unauthenticated' ? 'passer' : auth.value?.user.username
 
 const socket = io('http://localhost:1337') // 替換為你的後端 URL
-const roomId = ref('1') // 目前房號
+
+const nowRoomInfo = ref<RoomInfo>()
 
 const inputMessage = ref('') // input訊息框框
-const messages = ref<Message[]>([]) // 訊息陣列
+const messages = ref<{ [roomId: string]: Message[] }>({})
 const userCount = ref(0) // socket room人數
 
 let socketId = '' // 該視窗socket ID
+
+const roomsList = ref<[]>([])
 
 // 監聽房間人數變化
 socket.on('roomSize', (size: number) => {
@@ -38,7 +42,7 @@ socket.on('roomSize', (size: number) => {
 const submitMessage = () => {
   if (inputMessage.value.trim()) {
     socket.emit('message', {
-      roomId: roomId.value,
+      roomId: nowRoomInfo.value?.roomId,
       message: inputMessage.value,
       username,
     })
@@ -55,6 +59,20 @@ const scrollToBottom = async () => {
   }
 }
 
+const newChatroom = (roomInfo: RoomInfo) => {
+  socket.emit('join_room', roomInfo)
+}
+
+watch(nowRoomInfo, () => {
+  // 清空當前聊天室訊息
+  if (nowRoomInfo.value?.roomId) {
+    console.log(11)
+
+    // 發送加入聊天室的請求，後端會回傳歷史訊息
+    socket.emit('join_room', nowRoomInfo.value)
+  }
+})
+
 onMounted(() => {
   socket.on('connect', () => {
     socketId = socket.id || ''
@@ -64,26 +82,39 @@ onMounted(() => {
   socket.on(
     'message',
     (data: { sender: string; message: string; socketId: string }) => {
-      messages.value.push(data)
+      const roomId = nowRoomInfo.value?.roomId
+      console.log({ roomId })
+      if (roomId) {
+        messages.value[roomId].push(data)
+      }
       scrollToBottom()
     },
   )
+
+  // 監聽歷史訊息
+  socket.on(
+    'history',
+    (data: {
+      roomId: string
+      messages: { sender: string; message: string; socketId: string }[]
+    }) => {
+      messages.value[data.roomId] = data.messages
+      console.log(messages.value)
+    },
+  )
+
+  socket.on('room_list', (updatedRooms) => {
+    roomsList.value = updatedRooms
+  })
 
   socket.on('disconnect', () => {
     console.log('Disconnected from server')
   })
 })
 
-const joinRoom = () => {
-  if (roomId.value.trim()) {
-    socket.emit('join_room', roomId.value)
-    console.log(`Joined room: ${roomId.value}`)
-  }
-}
-
-const newChatroom = (roomInfo: RoomInfo) => {
-  socket.emit('join_room', roomInfo.roomId)
-}
+onUnmounted(() => {
+  socket.off('room_list')
+})
 </script>
 
 <template>
@@ -91,13 +122,19 @@ const newChatroom = (roomInfo: RoomInfo) => {
     class="flex h-[calc(100dvh-56px-64px)] w-full rounded-md border-[1px] border-black bg-slate-50"
   >
     <ChatRoomList
+      v-model="nowRoomInfo"
+      :rooms-list="roomsList"
       @new-chatroom="(roomInfo: RoomInfo) => newChatroom(roomInfo)"
     />
     <div class="w-full">
       <div
         class="flex h-16 w-full items-center justify-between bg-slate-300 px-6 text-xl font-medium"
       >
-        第一個聊天室（{{ userCount }}）
+        {{
+          nowRoomInfo
+            ? `${nowRoomInfo?.roomName} (${userCount})`
+            : '尚未加入聊天室'
+        }}
         <div class="flex items-center">
           <Icon name="icon:search" mode="svg" class="h-6 w-6" />
           <Icon name="icon:dot-menu" mode="svg" class="h-6 w-6" />
@@ -105,22 +142,27 @@ const newChatroom = (roomInfo: RoomInfo) => {
       </div>
       <div
         ref="chatContainer"
-        class="flex h-[calc(100%-64px-72px)] flex-col space-y-3 overflow-y-auto px-8 py-5"
+        class="h-[calc(100%-64px-72px)] overflow-y-auto px-8 py-5"
       >
-        <div
-          v-for="(message, index) in messages"
-          :key="index"
-          class="inline-block"
-          :class="message.socketId === socketId ? 'self-end' : 'self-start'"
-        >
+        <div v-if="!nowRoomInfo">請先建立聊天室</div>
+        <div v-else class="flex flex-col space-y-3">
           <div
-            class="mb-1 text-sm"
-            :class="{ 'text-right': message.socketId === socketId }"
+            v-for="(message, index) in messages[nowRoomInfo?.roomId]"
+            :key="index"
+            class="inline-block"
+            :class="message.socketId === socketId ? 'self-end' : 'self-start'"
           >
-            {{ message.socketId === socketId ? 'You' : message.sender }}
-          </div>
-          <div class="rounded border-[1px] border-gray-500 bg-white px-3 py-1">
-            {{ message.message }}
+            <div
+              class="mb-1 text-sm"
+              :class="{ 'text-right': message.socketId === socketId }"
+            >
+              {{ message.socketId === socketId ? 'You' : message.sender }}
+            </div>
+            <div
+              class="rounded border-[1px] border-gray-500 bg-white px-3 py-1"
+            >
+              {{ message.message }}
+            </div>
           </div>
         </div>
       </div>
