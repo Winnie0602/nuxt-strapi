@@ -8,6 +8,7 @@ type RoomInfo = {
   roomName: string
   roomDescription: string
   roomPassword?: string
+  userCount?: number
 }
 
 const nowRoomInfo = defineModel<RoomInfo>()
@@ -56,7 +57,12 @@ const newChatroom = () => {
           class="cursor-pointer border-b-[1px] border-gray-200 pb-3"
           @click="nowRoomInfo = { ...room, roomId: room.roomName }"
         >
-          <div class="text-xl font-bold">{{ room.roomName }}</div>
+          <div class="flex items-center text-xl font-bold">
+            {{ room.roomName }}
+            <span class="ml-1 text-sm font-normal">
+              ( {{ room.userCount }} )
+            </span>
+          </div>
           <div class="text-sm text-gray-900">{{ room.roomDescription }}</div>
         </div>
       </div>

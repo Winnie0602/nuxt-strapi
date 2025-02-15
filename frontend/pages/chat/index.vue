@@ -28,16 +28,10 @@ const nowRoomInfo = ref<RoomInfo>()
 
 const inputMessage = ref('') // input訊息框框
 const messages = ref<{ [roomId: string]: Message[] }>({})
-const userCount = ref(0) // socket room人數
 
 let socketId = '' // 該視窗socket ID
 
 const roomsList = ref<RoomInfo[]>([])
-
-// 監聽房間人數變化
-socket.on('roomSize', (size: number) => {
-  userCount.value = size
-})
 
 // 發送訊息給socket server
 const submitMessage = () => {
@@ -108,7 +102,7 @@ onUnmounted(() => {
     <ChatRoomList
       v-model="nowRoomInfo"
       :rooms-list="roomsList"
-      @new-chatroom="(roomInfo: RoomInfo) => (nowRoomInfo = roomInfo)"
+      @new-chatroom="(roomInfo: RoomInfo) => socket.emit('join_room', roomInfo)"
     />
     <div class="w-full">
       <div
@@ -116,7 +110,7 @@ onUnmounted(() => {
       >
         {{
           nowRoomInfo
-            ? `${nowRoomInfo?.roomName} (${userCount})`
+            ? `${nowRoomInfo?.roomName} ( ${nowRoomInfo?.userCount} )`
             : '尚未加入聊天室'
         }}
         <div class="flex items-center">
@@ -124,6 +118,7 @@ onUnmounted(() => {
           <Icon name="icon:dot-menu" mode="svg" class="h-6 w-6" />
         </div>
       </div>
+      <div></div>
       <div
         ref="chatContainer"
         class="h-[calc(100%-64px-72px)] overflow-y-auto px-8 py-5"

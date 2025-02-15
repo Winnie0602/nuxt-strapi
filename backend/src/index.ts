@@ -26,9 +26,6 @@ export default {
         // 更新房間資訊或初始化
         handleRoomInfo(roomId, roomName, roomDescription)
 
-        // 廣播房間人數
-        broadcastRoomSize(roomId)
-
         // 更新聊天室列表並廣播給所有人
         broadcastRooms()
       })
@@ -71,12 +68,6 @@ export default {
       if (room) {
         room.userCount = io.sockets.adapter.rooms.get(roomId)?.size || 0
       }
-    }
-
-    // **廣播房間人數**
-    function broadcastRoomSize(roomId: string) {
-      const room = roomsInfo.get(roomId)
-      io.to(roomId).emit('roomSize', room?.userCount || 0)
     }
 
     // **儲存訊息至歷史紀錄**
