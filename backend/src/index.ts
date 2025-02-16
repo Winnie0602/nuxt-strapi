@@ -1,10 +1,7 @@
 import { Server } from 'socket.io'
 
 // 聊天室列表
-const roomsInfo = new Map<
-  string,
-  { roomName: string; roomDescription: string; userCount: number; roomPassword: string }
->()
+const roomsInfo = new Map<string, { roomName: string; roomDescription: string; userCount: number }>()
 
 // 每個房間的歷史訊息
 const roomsMessages = new Map<
@@ -23,14 +20,14 @@ export default {
 
     io.on('connection', (socket) => {
       // 用戶加入聊天室
-      socket.on('join_room', ({ roomId, roomName, roomDescription, roomPassword }) => {
+      socket.on('join_room', ({ roomId, roomName, roomDescription }) => {
         socket.join(roomId)
 
         // 發送房間歷史訊息
         sendRoomHistory(socket, roomId)
 
         // 更新房間資訊或初始化
-        handleRoomInfo(roomId, roomName, roomDescription, roomPassword)
+        handleRoomInfo(roomId, roomName, roomDescription)
 
         // 更新聊天室列表並廣播給所有人
         broadcastRooms()
@@ -67,9 +64,9 @@ export default {
     }
 
     // **處理房間資訊**
-    function handleRoomInfo(roomId: string, roomName: string, roomDescription: string, roomPassword: string) {
+    function handleRoomInfo(roomId: string, roomName: string, roomDescription: string) {
       if (!roomsInfo.has(roomId)) {
-        roomsInfo.set(roomId, { roomName, roomDescription, userCount: 0, roomPassword })
+        roomsInfo.set(roomId, { roomName, roomDescription, userCount: 0 })
       }
 
       // 更新房間人數
@@ -127,7 +124,6 @@ export default {
         roomId,
         roomName: room.roomName,
         roomDescription: room.roomDescription,
-        roomPassword: room.roomPassword,
         userCount: room.userCount,
       }))
       io.emit('room_list', rooms) // 廣播給所有連線的客戶端
@@ -161,9 +157,9 @@ export default {
       }
 
       const data = (await response.json()) as TranslateResponse
-      return data.data?.translations?.[0]?.translatedText || message
-
-      // return message
+      // 解碼返回的翻譯結果，移除HTML實體符號
+      const translatedText = data.data?.translations?.[0]?.translatedText || message
+      return translatedText.replace(/&#39;/g, "'") // 手動處理常見的實體符號
     }
 
     strapi.io = io // 儲存 io 實例，便於後續使用

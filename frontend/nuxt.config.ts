@@ -37,9 +37,11 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     authSecret: process.env.AUTH_SECRET,
-    backendUrl: process.env.STRAPI_BASE_URL,
     strapiBaseUrl:
       process.env.STRAPI_BASE_URL + '/api' || 'http://localhost:1337/api',
+    public: {
+      backendUrl: process.env.STRAPI_BASE_URL,
+    },
   },
 
   routeRules: {

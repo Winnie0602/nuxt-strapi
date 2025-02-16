@@ -19,6 +19,21 @@ export type Pagination = {
   total: number
 }
 
+export type RoomInfo = {
+  roomId: string
+  roomName: string
+  roomDescription: string
+  userCount: number
+}
+
+export type Message = {
+  socketId: string
+  sender: string
+  message: string
+  translatedMessage: string
+  targetLang: VoiceLanguage
+}
+
 export enum GoogleLanguage {
   English = 'en-US',
   TraditionalChinese = 'zh-TW',

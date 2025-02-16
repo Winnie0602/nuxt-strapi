@@ -1,30 +1,16 @@
 <script lang="ts" setup>
 import { io } from 'socket.io-client'
-import type { Language } from '~/types/type'
+import type { Language, RoomInfo, Message } from '~/types/type'
 import { VoiceLanguage, GoogleLanguage } from '~/types/type'
 import VoiceSpeak from '~/components/global/VoiceSpeak.vue'
 
 const voiceSpeakRef = ref<InstanceType<typeof VoiceSpeak>[] | null>(null)
 
+const runtimeConfig = useRuntimeConfig()
+
 definePageMeta({
   layout: 'full-screen',
 })
-
-type RoomInfo = {
-  roomId: string
-  roomName: string
-  roomDescription: string
-  roomPassword?: string
-  userCount: number
-}
-
-type Message = {
-  socketId: string
-  sender: string
-  message: string
-  translatedMessage: string
-  targetLang: VoiceLanguage
-}
 
 const { data: auth, status } = useAuth()
 
@@ -33,7 +19,7 @@ const chatContainer = ref<HTMLElement | null>(null) // 指向聊天視窗容器
 const username =
   status.value === 'unauthenticated' ? 'passer' : auth.value?.user.username
 
-const socket = io('http://localhost:1337') // 替換為你的後端 URL
+const socket = io(runtimeConfig.public.backendUrl) // 後端 URL
 
 const nowRoomInfo = ref<RoomInfo>()
 
@@ -72,6 +58,14 @@ const scrollToBottom = () => {
   if (chatContainer.value) {
     chatContainer.value.scrollTop = chatContainer.value.scrollHeight
   }
+}
+
+// 新增emoji到input
+const addUnicodeSymbol = (symbol: string) => {
+  // 十六進位的部分並轉換為 Unicode 符號
+  inputMessage.value += String.fromCodePoint(
+    parseInt(symbol.replace('&#x', '').replace(';', ''), 16),
+  )
 }
 
 watch(nowRoomInfo, () => {
@@ -130,7 +124,7 @@ onUnmounted(() => {
       v-model="nowRoomInfo"
       :rooms-list="roomsList"
       class="hidden md:block"
-      @new-chatroom="(roomInfo: RoomInfo) => socket.emit('join_room', roomInfo)"
+      @new-chatroom="(roomInfo: RoomInfo) => (nowRoomInfo = roomInfo)"
     />
     <div class="w-full">
       <div
@@ -139,7 +133,7 @@ onUnmounted(() => {
         <div class="flex items-center">
           {{
             nowRoomInfo
-              ? `${nowRoomInfo?.roomName} ( ${roomsList.filter((e) => e.roomId === nowRoomInfo?.roomId)[0].userCount} )`
+              ? `${nowRoomInfo?.roomName} ( ${roomsList.filter((e) => e.roomId === nowRoomInfo?.roomId)[0]?.userCount} )`
               : '尚未加入聊天室'
           }}
           <div v-if="nowRoomInfo" class="ml-2">
@@ -164,7 +158,7 @@ onUnmounted(() => {
                   v-model="nowRoomInfo"
                   :rooms-list="roomsList"
                   @new-chatroom="
-                    (roomInfo: RoomInfo) => socket.emit('join_room', roomInfo)
+                    (roomInfo: RoomInfo) => (nowRoomInfo = roomInfo)
                   "
                 />
               </div>
@@ -192,7 +186,12 @@ onUnmounted(() => {
                 <VoiceSpeak
                   v-if="isVolumeOpen"
                   ref="voiceSpeakRef"
-                  :word="message.translatedMessage"
+                  :word="
+                    message.translatedMessage.replace(
+                      /[\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}]/gu,
+                      '',
+                    )
+                  "
                   :lang="message.targetLang"
                   :index="index"
                 />
@@ -215,6 +214,10 @@ onUnmounted(() => {
           :disabled="nowRoomInfo === undefined"
           :language="language"
           @change-lang="(copy: Language) => (language = copy)"
+        />
+        <ChatEmojiButton
+          :disabled="nowRoomInfo === undefined"
+          @select-emoji="(emoji: string) => addUnicodeSymbol(emoji)"
         />
         <UInput
           v-model="inputMessage"

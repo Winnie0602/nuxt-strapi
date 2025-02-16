@@ -99,7 +99,7 @@ const setLanguage = (
 
 <template>
   <div>
-    <UPopover class="mr-4" :popper="{ placement: 'top' }">
+    <UPopover class="mr-1" :popper="{ placement: 'top' }">
       <UButton color="white" label="&#x1F310;" :disabled="disabled" />
       <template #panel="{ close }">
         <div class="flex">
