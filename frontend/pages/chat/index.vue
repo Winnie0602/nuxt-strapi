@@ -5,7 +5,6 @@ import { VoiceLanguage, GoogleLanguage } from '~/types/type'
 import VoiceSpeak from '~/components/global/VoiceSpeak.vue'
 
 const voiceSpeakRef = ref<InstanceType<typeof VoiceSpeak>[] | null>(null)
-
 const runtimeConfig = useRuntimeConfig()
 
 definePageMeta({

@@ -36,10 +36,10 @@ watch(date, () => {
 </script>
 
 <template>
-  <div class="flex w-full items-center justify-evenly">
+  <div class="flex w-full flex-col items-center justify-evenly sm:flex-row">
     <VDatePicker v-if="show" v-model="date" :attributes="attrs" />
 
-    <div class="space-y-2">
+    <div class="mt-8 space-y-2 sm:mt-0">
       <div class="flex items-center space-x-1">
         <UiInput
           v-model="year"

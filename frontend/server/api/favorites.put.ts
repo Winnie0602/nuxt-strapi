@@ -9,12 +9,7 @@ export default defineEventHandler(async (event) => {
   const session = await getServerSession(event)
 
   // 傳進來favorites的document ID 及 要改寫的單字，須先GET再PUT
-  // 週日代辦：串好所有喜愛功能、引入新UI框架、新增pinia 將用戶資訊存進去
   const body = await readBody(event)
-
-  console.log({
-    vocabularies: body.vocabulariesList,
-  })
 
   const config = useRuntimeConfig()
   if (session) {

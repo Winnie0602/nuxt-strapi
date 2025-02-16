@@ -11,7 +11,6 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/ui',
     '@sidebase/nuxt-auth',
-    '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
     '@vueuse/nuxt',
     '@nuxt/fonts',
@@ -35,10 +34,13 @@ export default defineNuxtConfig({
     editorSupport: true,
   },
 
+  css: ['~/assets/css/main.css'],
+
   runtimeConfig: {
     authSecret: process.env.AUTH_SECRET,
-    strapiBaseUrl:
-      process.env.STRAPI_BASE_URL + '/api' || 'http://localhost:1337/api',
+    strapiBaseUrl: process.env.STRAPI_BASE_URL
+      ? `${process.env.STRAPI_BASE_URL}/api`
+      : 'http://localhost:1337/api',
     public: {
       backendUrl: process.env.STRAPI_BASE_URL,
     },

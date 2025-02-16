@@ -70,12 +70,6 @@
       "relation": "oneToMany",
       "target": "api::favorite.favorite",
       "mappedBy": "user"
-    },
-    "chatrooms": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::chatroom.chatroom",
-      "mappedBy": "owner"
     }
   }
 }

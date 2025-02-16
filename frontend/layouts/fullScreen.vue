@@ -1,5 +1,5 @@
 <template>
-  <div data-theme="pastel" class="h-[100dvh] bg-gray-600">
+  <div data-theme="pastel" class="h-[100dvh] bg-indigo-50">
     <NavBar class="" />
     <div
       class="mx-auto h-[calc(100dvh-56px)] w-full max-w-[1280px] px-5 py-10 md:space-x-10"

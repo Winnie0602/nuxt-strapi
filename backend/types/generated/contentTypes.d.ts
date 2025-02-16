@@ -369,39 +369,6 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiChatroomChatroom extends Struct.CollectionTypeSchema {
-  collectionName: 'chatrooms';
-  info: {
-    displayName: 'Chatroom';
-    pluralName: 'chatrooms';
-    singularName: 'chatroom';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::chatroom.chatroom'
-    > &
-      Schema.Attribute.Private;
-    name: Schema.Attribute.String;
-    owner: Schema.Attribute.Relation<
-      'manyToOne',
-      'plugin::users-permissions.user'
-    >;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiFavoriteFavorite extends Struct.CollectionTypeSchema {
   collectionName: 'favorites';
   info: {
@@ -436,35 +403,6 @@ export interface ApiFavoriteFavorite extends Struct.CollectionTypeSchema {
       'manyToMany',
       'api::vocabulary.vocabulary'
     >;
-  };
-}
-
-export interface ApiMessageMessage extends Struct.CollectionTypeSchema {
-  collectionName: 'messages';
-  info: {
-    description: '';
-    displayName: 'Message';
-    pluralName: 'messages';
-    singularName: 'message';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    content: Schema.Attribute.String;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::message.message'
-    > &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
   };
 }
 
@@ -968,7 +906,6 @@ export interface PluginUsersPermissionsUser
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    chatrooms: Schema.Attribute.Relation<'oneToMany', 'api::chatroom.chatroom'>;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
@@ -1020,9 +957,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::chatroom.chatroom': ApiChatroomChatroom;
       'api::favorite.favorite': ApiFavoriteFavorite;
-      'api::message.message': ApiMessageMessage;
       'api::vocabulary.vocabulary': ApiVocabularyVocabulary;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

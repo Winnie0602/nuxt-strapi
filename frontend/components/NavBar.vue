@@ -6,35 +6,39 @@ const user = data.value?.user
 const menuitems = [
   { label: `Hi, ${user?.username}` },
   { divider: true },
-  { title: '個人檔案', icon: 'ph:user' },
+  { title: '個人檔案(待開發)', icon: 'ph:user' },
   {
     title: '我的收藏',
     icon: 'ph:heart',
     items: [
       { title: '單字', path: '/my/favorites' },
-      { title: '文章', path: '/my/favorites' },
-      { title: '對話', path: '/my/favorites' },
+      // { title: '文章', path: '/my/favorites' },
+      // { title: '對話', path: '/my/favorites' },
       { divider: true },
       { title: 'More', icon: 'ph:plus-circle' },
     ],
   },
-  { title: '新增內容', icon: 'ph:plus-circle' },
-  { title: '語速調整', icon: 'ph:gear' },
+  { title: '新增內容(待開發)', icon: 'ph:plus-circle' },
+  { title: '語速調整(待開發)', icon: 'ph:gear' },
   { divider: true },
-  { title: 'Github', icon: 'ph:github-logo' },
-  { divider: true },
-  { title: '登出', icon: 'ph:sign-out' },
+  {
+    title: 'Github',
+    icon: 'ph:github-logo',
+    path: 'https://github.com/Winnie0602?tab=repositories',
+  },
 ]
 </script>
 
 <template>
   <div>
     <UiNavbar>
-      <UiContainer class="flex h-14 items-center justify-between">
+      <UiContainer
+        class="flex h-20 flex-col items-end justify-center sm:h-14 sm:flex-row sm:items-center sm:justify-between"
+      >
         <NuxtLink to="/" class="font-semibold">
           Winnie Learning &#x1F34F; &#x1F352; &#x1F347;
         </NuxtLink>
-        <nav class="hidden items-center gap-8 sm:flex">
+        <nav class="flex items-center gap-5">
           <UiDropdownMenu>
             <UiDropdownMenuTrigger>
               <div
@@ -48,21 +52,21 @@ const menuitems = [
               <UiDropdownMenuItem>
                 <NuxtLink to="/learning/vocabulary">單字</NuxtLink>
               </UiDropdownMenuItem>
-              <UiDropdownMenuItem>
+              <!-- <UiDropdownMenuItem>
                 <NuxtLink to="/">對話</NuxtLink>
               </UiDropdownMenuItem>
               <UiDropdownMenuItem>
                 <NuxtLink to="/">文章</NuxtLink>
-              </UiDropdownMenuItem>
+              </UiDropdownMenuItem> -->
               <UiDropdownMenuSeparator />
               <UiDropdownMenuItem>
-                <NuxtLink to="/">各種副詞</NuxtLink>
-              </UiDropdownMenuItem>
-              <UiDropdownMenuItem>
-                <NuxtLink to="/learning/time">時間副詞</NuxtLink>
+                <NuxtLink to="/learning/time">日文日期發音</NuxtLink>
               </UiDropdownMenuItem>
               <UiDropdownMenuItem>
                 <NuxtLink to="/chat">多國聊天室</NuxtLink>
+              </UiDropdownMenuItem>
+              <UiDropdownMenuItem>
+                <NuxtLink to="/learning/time">時間副詞(待開發)</NuxtLink>
               </UiDropdownMenuItem>
             </UiDropdownMenuContent>
           </UiDropdownMenu>
@@ -78,13 +82,13 @@ const menuitems = [
             </UiDropdownMenuTrigger>
             <UiDropdownMenuContent class="w-15">
               <UiDropdownMenuItem>
-                <NuxtLink to="/">單字測驗</NuxtLink>
+                <NuxtLink to="/test/spell">拼字測驗</NuxtLink>
               </UiDropdownMenuItem>
               <UiDropdownMenuItem>
-                <NuxtLink to="/test">拼字測驗</NuxtLink>
+                <NuxtLink to="/">單字測驗(待開發)</NuxtLink>
               </UiDropdownMenuItem>
               <UiDropdownMenuItem>
-                <NuxtLink to="/">聽力測驗</NuxtLink>
+                <NuxtLink to="/">聽力測驗(待開發)</NuxtLink>
               </UiDropdownMenuItem>
             </UiDropdownMenuContent>
           </UiDropdownMenu>
@@ -101,11 +105,13 @@ const menuitems = [
                 <template v-for="(item, i) in menuitems" :key="i">
                   <UiDropdownMenuLabel v-if="item.label" :label="item.label" />
                   <UiDropdownMenuSeparator v-else-if="item.divider" />
-                  <UiDropdownMenuItem
+                  <NuxtLink
                     v-else-if="item.title && !item.items"
-                    :title="item.title"
-                    :icon="item.icon"
-                  />
+                    :to="item.path"
+                  >
+                    <UiDropdownMenuItem :title="item.title" :icon="item.icon" />
+                  </NuxtLink>
+
                   <UiDropdownMenuSub v-else-if="item.title && item.items">
                     <UiDropdownMenuSubTrigger
                       :title="item.title"
@@ -130,13 +136,21 @@ const menuitems = [
               </UiDropdownMenuContent>
             </UiDropdownMenu>
           </div>
-          <UiButton v-if="data" variant="destructive" @click="signOut()">
+          <button
+            v-if="data"
+            class="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-400"
+            @click="signOut()"
+          >
             登出
-          </UiButton>
+          </button>
 
-          <div v-else class="text-center">
-            <UiButton @click="navigateTo('/login')">登入 / 註冊</UiButton>
-          </div>
+          <NuxtLink
+            v-else
+            to="/login"
+            class="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-400"
+          >
+            登入
+          </NuxtLink>
         </nav>
       </UiContainer>
     </UiNavbar>

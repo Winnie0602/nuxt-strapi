@@ -19,7 +19,6 @@ const username =
 onMounted(() => {
   socket.on('connect', () => {
     socketId = socket.id || ''
-    console.log('Connected with socket id:', socketId)
   })
 
   socket.on('message', (data: { sender: string; message: string; socketId: string }) => {
@@ -35,7 +34,6 @@ const joinRoom = () => {
   if (roomId.value.trim()) {
     socket.emit('join_room', roomId.value)
     joined.value = true
-    console.log(`Joined room: ${roomId.value}`)
   }
 }
 

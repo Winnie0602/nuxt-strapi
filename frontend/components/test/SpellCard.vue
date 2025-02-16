@@ -51,8 +51,8 @@ const enter = (index: number) => {
 </script>
 
 <template>
-  <div class="embla__slide">
-    <UiCard class="w-[500px] max-w-md bg-purple-100">
+  <div class="embla__slide flex-[0_0_80vw] md:flex-[0_0_500px]">
+    <UiCard class="w-[calc(80vw-10px)] max-w-md bg-purple-100 md:w-[500px]">
       <template #content>
         <UiCardContent>
           <div>
@@ -86,3 +86,9 @@ const enter = (index: number) => {
     </UiCard>
   </div>
 </template>
+
+<style lang="postcss" scoped>
+.embla__slide {
+  min-width: 0;
+}
+</style>

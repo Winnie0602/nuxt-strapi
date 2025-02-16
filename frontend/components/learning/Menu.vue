@@ -18,12 +18,12 @@
           >
             單字
           </NuxtLink>
-          <NuxtLink
+          <!-- <NuxtLink
             :to="'/learning/vocabulary'"
             class="block rounded-md border px-4 py-3 font-mono text-sm hover:bg-gray-100"
           >
             對話
-          </NuxtLink>
+          </NuxtLink> -->
         </UiCollapsibleContent>
       </UiCollapsible>
     </div>
@@ -40,16 +40,16 @@
         </div>
         <UiCollapsibleContent class="space-y-2">
           <NuxtLink
-            to="/test/"
-            class="block rounded-md border px-4 py-3 font-mono text-sm hover:bg-gray-100"
-          >
-            單字測驗
-          </NuxtLink>
-          <NuxtLink
             to="/test/spell"
             class="block rounded-md border px-4 py-3 font-mono text-sm hover:bg-gray-100"
           >
             拼字測驗
+          </NuxtLink>
+          <NuxtLink
+            to="/test/"
+            class="block rounded-md border px-4 py-3 font-mono text-sm hover:bg-gray-100"
+          >
+            單字測驗(待開發)
           </NuxtLink>
         </UiCollapsibleContent>
       </UiCollapsible>
@@ -70,7 +70,7 @@
             to="/learning/time"
             class="block rounded-md border px-4 py-3 font-mono text-sm hover:bg-gray-100"
           >
-            日文發音月曆
+            日文日期發音
           </NuxtLink>
         </UiCollapsibleContent>
       </UiCollapsible>

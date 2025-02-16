@@ -1,5 +1,3 @@
-// file: ~/server/api/auth/[...].ts
-// import CredentialsProvider from 'next-auth/providers/credentials'
 import { NuxtAuthHandler } from '#auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 const config = useRuntimeConfig()
@@ -7,6 +5,16 @@ const config = useRuntimeConfig()
 interface Credentials {
   identifier: string
   password: string
+}
+
+interface ApiLoginResult {
+  jwt: string
+  user: {
+    id: number
+    documentId: string
+    username: string
+    email: string
+  }
 }
 
 export default NuxtAuthHandler({
@@ -27,14 +35,17 @@ export default NuxtAuthHandler({
         const config = useRuntimeConfig()
 
         try {
-          const response = await $fetch(`${config.strapiBaseUrl}/auth/local`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: {
-              identifier: credentials.identifier,
-              password: credentials.password,
+          const response = await $fetch<ApiLoginResult>(
+            `${config.strapiBaseUrl}/auth/local`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: {
+                identifier: credentials.identifier,
+                password: credentials.password,
+              },
             },
-          })
+          )
 
           if (response?.user && response?.jwt) {
             return { ...response.user, jwt: response.jwt }
@@ -50,9 +61,6 @@ export default NuxtAuthHandler({
   ],
   callbacks: {
     jwt: async ({ token, user, account }) => {
-      // console.log(token, 1111)
-      // console.log(user, 2222)
-      // console.log(account, 3333)
       // 登入操作才為true
       const isSignIn = !!user
 
@@ -64,6 +72,7 @@ export default NuxtAuthHandler({
         }
         return Promise.resolve(token)
       } catch (error) {
+        console.log(error)
         return Promise.resolve(token)
       }
     },

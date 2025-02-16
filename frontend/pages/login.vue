@@ -10,6 +10,8 @@ import {
 import { required, min, email } from '@vee-validate/rules'
 import { localize } from '@vee-validate/i18n'
 
+definePageMeta({ layout: 'full-screen' })
+
 // 建立表單規則
 defineRule('required', required)
 defineRule('min_value', min)
@@ -38,8 +40,8 @@ const onSubmit: SubmissionHandler = async (values, actions) => {
   // https://github.com/sidebase/nuxt-auth/issues/493
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error, url }: any = await signIn('credentials', {
-    identifier: 'winnie',
-    password: 'Z976200@gmail.com',
+    identifier: values.email,
+    password: values.password,
     redirect: false,
     callbackUrl: '/',
   })
@@ -102,13 +104,18 @@ const onSubmit: SubmissionHandler = async (values, actions) => {
               <ErrorMessage name="password" />
             </div>
             <div class="flex items-center justify-between">
-              <UiButton type="submit">登入</UiButton>
-              <NuxtLink
+              <button
+                ype="submit"
+                class="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-400"
+              >
+                登入
+              </button>
+              <!-- <NuxtLink
                 to="/register"
                 class="text-right text-sm underline hover:text-red-600"
               >
                 沒有帳號嗎？去註冊！
-              </NuxtLink>
+              </NuxtLink> -->
             </div>
           </Form>
         </UiCardContent>

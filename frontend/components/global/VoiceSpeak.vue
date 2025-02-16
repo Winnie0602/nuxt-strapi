@@ -2,14 +2,14 @@
 import { speak } from '~/utils/speak'
 import { inject } from 'vue'
 
-const props = defineProps<{ word: string; index: number; lang?: string }>()
+const props = defineProps<{ word: string; index?: number; lang?: string }>()
 const currentReadingIndex = inject<Ref<number | null>>(
   'currentReadingIndex',
   ref(null),
 )
 
 const playWord = () => {
-  currentReadingIndex.value = props.index
+  currentReadingIndex.value = props.index ?? 0
 
   speak(
     props.word,

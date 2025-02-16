@@ -152,7 +152,11 @@ onMounted(() => {
         / 100
       </div>
     </div>
-    <div v-if="showQuestionCards" ref="emblaRef" class="embla w-[500px]">
+    <div
+      v-if="showQuestionCards"
+      ref="emblaRef"
+      class="embla w-[80vw] md:w-[500px]"
+    >
       <div class="embla__container">
         <TestSpellCard
           v-for="(vocabulary, index) in vocabularies"
@@ -189,10 +193,6 @@ onMounted(() => {
 }
 .embla__container {
   display: flex;
-}
-.embla__slide {
-  flex: 0 0 500px;
-  min-width: 0;
 }
 
 .v-enter-active,
