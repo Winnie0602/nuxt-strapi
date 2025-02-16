@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Vocabulary } from '~/types/type'
+import VocabularyModal from '../modal/VocabularyModal.vue'
 
 type Favorites = {
   documentId: string
@@ -47,17 +48,9 @@ const showChinese = ref(true)
 
 const showSerachInput = ref(!route.path.includes('spell'))
 
-// const searchHandler = () => {
-//   if (search.value === '') {
-//     return props.vocabularies
-//   }
+const ismodalOpen = ref(false)
 
-//   filterVocabularies.value = filterVocabularies.value?.filter(
-//     (item) =>
-//       item.full_word_jp.includes(search.value) ||
-//       item.full_reading.includes(search.value),
-//   )
-// }
+const modalVocabulary = ref<Vocabulary>()
 </script>
 
 <template>
@@ -156,11 +149,17 @@ const showSerachInput = ref(!route.path.includes('spell'))
               :key="item.id"
             >
               <UiTableRow
-                class="h-[58px]"
+                class="h-[58px] cursor-pointer"
                 :class="
                   highlights.includes(item.documentId)
                     ? 'bg-red-200 hover:bg-red-200'
                     : 'bg-white'
+                "
+                @click="
+                  () => {
+                    modalVocabulary = item
+                    ismodalOpen = true
+                  }
                 "
               >
                 <UiTableCell class="flex h-full items-end font-medium">
@@ -211,5 +210,10 @@ const showSerachInput = ref(!route.path.includes('spell'))
         </UiTable>
       </div>
     </div>
+    <VocabularyModal
+      v-if="modalVocabulary"
+      v-model="ismodalOpen"
+      :vocabulary="modalVocabulary"
+    />
   </div>
 </template>

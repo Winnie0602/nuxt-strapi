@@ -101,6 +101,12 @@ definePageMeta({ layout: 'full-screen' })
               </NuxtLink>
             </div>
           </div>
+          <div class="space-y-2 pb-8">
+            <div>4. 未來預計加入功能：</div>
+            <div class="text-sm">
+              頁面加入國際語言(i18n)、聽力測驗、聊天室列表存入資料庫、語速調整、前端新增單字至後台
+            </div>
+          </div>
         </div>
       </div>
     </UiContainer>

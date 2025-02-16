@@ -12,8 +12,6 @@ const { data: vocabularies } = await useFetch('/api/vocabularies', {
   },
 })
 
-console.log(vocabularies.value?.map((e) => e.full_reading))
-
 const score = ref(0)
 const show = ref(false)
 const showAlertType = ref<'correct' | 'failed'>('correct')

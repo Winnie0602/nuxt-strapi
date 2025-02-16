@@ -11,7 +11,6 @@ export const speak = (
   window.speechSynthesis.speak(utterThis)
 
   utterThis.onend = () => {
-    console.log('end')
     if (onEnd) onEnd() // 播放結束時執行回調函數
   }
 }

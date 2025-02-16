@@ -18,6 +18,12 @@
           >
             單字
           </NuxtLink>
+          <NuxtLink
+            to="/chat"
+            class="block rounded-md border px-4 py-3 font-mono text-sm hover:bg-gray-100"
+          >
+            多國聊天室
+          </NuxtLink>
           <!-- <NuxtLink
             :to="'/learning/vocabulary'"
             class="block rounded-md border px-4 py-3 font-mono text-sm hover:bg-gray-100"
