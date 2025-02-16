@@ -92,15 +92,22 @@ onMounted(() => {
       scrollToBottom()
 
       if (voiceSpeakRef.value) {
-        voiceSpeakRef.value[messages.value[roomId].length - 1].playWord()
+        voiceSpeakRef.value[messages.value[roomId].length - 1]?.playWord()
       }
     }
   })
 
   // 監聽歷史訊息
-  socket.on('history', (data: { roomId: string; messages: Message[] }) => {
-    messages.value[data.roomId] = data.messages
-  })
+  socket.on(
+    'history',
+    async (data: { roomId: string; messages: Message[] }) => {
+      messages.value[data.roomId] = data.messages
+
+      await nextTick() // 確保 DOM 更新後再滾動
+
+      scrollToBottom()
+    },
+  )
 
   socket.on('room_list', (updatedRooms: RoomInfo[]) => {
     roomsList.value = updatedRooms
