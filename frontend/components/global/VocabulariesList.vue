@@ -149,22 +149,23 @@ const modalVocabulary = ref<Vocabulary>()
               :key="item.id"
             >
               <UiTableRow
-                class="h-[58px] cursor-pointer"
+                class="h-[58px]"
                 :class="
                   highlights.includes(item.documentId)
                     ? 'bg-red-200 hover:bg-red-200'
                     : 'bg-white'
                 "
-                @click="
-                  () => {
-                    modalVocabulary = item
-                    ismodalOpen = true
-                  }
-                "
               >
                 <UiTableCell class="flex h-full items-end font-medium">
                   <div
                     v-if="textMode === 'both'"
+                    class="cursor-pointer"
+                    @click="
+                      () => {
+                        modalVocabulary = item
+                        ismodalOpen = true
+                      }
+                    "
                     v-html="item.html_hiragana"
                   ></div>
                   <div v-else>
@@ -193,16 +194,29 @@ const modalVocabulary = ref<Vocabulary>()
                   </UiBadge>
                 </UiTableCell>
                 <UiTableCell class="text-right">
-                  <FavoriteButton
-                    :my-favorites="
-                      myFavorites || {
-                        documentId: '',
-                        vocabularies: [],
-                      }
-                    "
-                    :document-id="item.documentId"
-                    :item="item"
-                  />
+                  <div class="flex items-center justify-end">
+                    <Icon
+                      name="icon:open-modal"
+                      class="mr-3 h-4 w-4 cursor-pointer"
+                      mode="svg"
+                      @click="
+                        () => {
+                          modalVocabulary = item
+                          ismodalOpen = true
+                        }
+                      "
+                    />
+                    <FavoriteButton
+                      :my-favorites="
+                        myFavorites || {
+                          documentId: '',
+                          vocabularies: [],
+                        }
+                      "
+                      :document-id="item.documentId"
+                      :item="item"
+                    />
+                  </div>
                 </UiTableCell>
               </UiTableRow>
             </template>
