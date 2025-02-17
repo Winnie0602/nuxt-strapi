@@ -158,7 +158,7 @@ onUnmounted(() => {
               trailing-icon="i-heroicons-chevron-down-20-solid"
             />
 
-            <template #panel>
+            <template #panel="{ close }">
               <div class="h-[60vh] p-4">
                 <ChatRoomList
                   v-model="nowRoomInfo"
@@ -166,6 +166,7 @@ onUnmounted(() => {
                   @new-chatroom="
                     (roomInfo: RoomInfo) => (nowRoomInfo = roomInfo)
                   "
+                  @enter-room="close()"
                 />
               </div>
             </template>
@@ -182,13 +183,20 @@ onUnmounted(() => {
             v-for="(message, index) in messages[nowRoomInfo?.roomId]"
             :key="index"
             class="inline-block"
-            :class="message.socketId === socketId ||
-                  message.sender === auth.user.username ? 'self-end' : 'self-start'"
+            :class="
+              message.socketId === socketId ||
+              message.sender === auth?.user.username
+                ? 'self-end'
+                : 'self-start'
+            "
           >
             <div
               class="mb-1 flex text-sm"
-              :class="{ 'justify-end': message.socketId === socketId ||
-                  message.sender === auth.user.username }"
+              :class="{
+                'justify-end':
+                  message.socketId === socketId ||
+                  message.sender === auth?.user.username,
+              }"
             >
               <div class="flex space-x-2">
                 <VoiceSpeak
@@ -205,7 +213,7 @@ onUnmounted(() => {
                 />
                 {{
                   message.socketId === socketId ||
-                  message.sender === auth.user.username
+                  message.sender === auth?.user.username
                     ? 'You'
                     : message.sender
                 }}

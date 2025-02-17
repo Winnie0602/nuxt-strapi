@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RoomInfo } from '~/types/type'
 
-const emit = defineEmits(['newChatroom'])
+const emit = defineEmits(['newChatroom', 'enterRoom'])
 
 const props = defineProps<{ roomsList: RoomInfo[] }>()
 
@@ -46,6 +46,7 @@ const newChatroom = (type: 'new' | 'exsist') => {
 
 const enterRoom = (room: RoomInfo) => {
   nowRoomInfo.value = { ...room, roomId: room.roomName }
+  emit('enterRoom')
 }
 </script>
 
