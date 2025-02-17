@@ -25,9 +25,7 @@ const { data } = await useFetch('/api/vocabularies', {
 
 <template>
   <div class="flex w-full flex-col items-center">
-    <VocabulariesList
-      :vocabularies="data?.vocabularies || []"
-    />
+    <VocabulariesList :vocabularies="data?.vocabularies || []" />
 
     <UPagination
       v-model="page"

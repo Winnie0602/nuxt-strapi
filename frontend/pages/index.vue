@@ -8,15 +8,18 @@ definePageMeta({ layout: 'full-screen' })
       class="scrollbar max-h-[calc(100vh-160px)] max-w-[560px] overflow-y-scroll rounded-md bg-white p-8"
     >
       <div class="h-full w-full flex-col items-start justify-center rounded-md">
-        <div class="text-meduim flex w-full justify-center space-x-1.5 text-lg">
+        <div
+          class="text-meduim flex w-full items-center justify-center space-x-1.5 text-lg"
+        >
           <div
             v-for="text in ['作', '品', '介', '紹']"
             :key="text"
-            class="h-10 w-10 content-center rounded-full bg-stone-800 text-center text-white"
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-stone-800 text-center text-white"
           >
             {{ text }}
           </div>
         </div>
+        <div class="mt-3 w-full text-center">日文學習網站</div>
         <div class="mt-3 space-y-5">
           <div class="space-y-2">
             <div>1. 頁面介紹：</div>
@@ -89,7 +92,7 @@ definePageMeta({ layout: 'full-screen' })
               密碼：Test123@mail.com
             </div>
           </div>
-          <div class="space-y-2 pb-8">
+          <div class="space-y-2">
             <div>4. Github source code</div>
             <div class="text-sm">
               <NuxtLink
@@ -102,7 +105,7 @@ definePageMeta({ layout: 'full-screen' })
             </div>
           </div>
           <div class="space-y-2 pb-8">
-            <div>4. 未來預計加入功能：</div>
+            <div>5. 未來預計加入功能：</div>
             <div class="text-sm">
               頁面加入國際語言(i18n)、聽力測驗、聊天室列表存入資料庫、語速調整、前端新增單字至後台
             </div>

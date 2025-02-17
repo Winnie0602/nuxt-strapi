@@ -25,9 +25,13 @@ defineProps<{
 
       <div class="">
         <div class="flex">
-          <div class="ml-1 rounded-sm bg-black px-1 text-sm text-white">例</div>
           <div
-            class="ml-1 mr-2 rounded-sm border-[1px] border-black bg-white px-1 text-sm text-black"
+            class="ml-1 h-6 content-center rounded-sm bg-black px-1 text-center text-sm text-white"
+          >
+            例
+          </div>
+          <div
+            class="ml-1 mr-2 h-6 content-center rounded-sm border-[1px] border-black bg-white px-1 text-center text-sm text-black"
           >
             日
           </div>
@@ -37,9 +41,13 @@ defineProps<{
           </div>
         </div>
         <div class="mt-1.5 flex">
-          <div class="ml-1 rounded-sm bg-black px-1 text-sm text-white">例</div>
           <div
-            class="ml-1 mr-2 rounded-sm border-[1px] border-black bg-white px-1 text-sm text-black"
+            class="ml-1 h-6 content-center rounded-sm bg-black px-1 text-center text-sm text-white"
+          >
+            例
+          </div>
+          <div
+            class="ml-1 mr-2 h-6 content-center rounded-sm border-[1px] border-black bg-white px-1 text-center text-sm text-black"
           >
             中
           </div>
