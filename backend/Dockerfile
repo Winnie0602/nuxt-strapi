@@ -13,6 +13,8 @@ RUN npm install
 # 复制所有文件到容器
 COPY . .
 
+RUN npm run build
+
 # 设置容器启动命令
 CMD ["npm", "start"]
 
