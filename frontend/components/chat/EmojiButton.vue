@@ -53,7 +53,7 @@ const selectEmoji = (emoji: string) => {
 </script>
 
 <template>
-  <div>
+  <div class="hidden sm:block">
     <UPopover class="mr-2" :popper="{ placement: 'top' }">
       <UButton color="white" label="&#x1F609;" :disabled="disabled" />
       <template #panel="">
