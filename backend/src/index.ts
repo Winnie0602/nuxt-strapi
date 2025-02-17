@@ -141,25 +141,22 @@ export default {
     // **使用 Google Translate API 進行翻譯**
     async function translateMessage(message: string, sourceLang: string, targetLang: string): Promise<string> {
       const url = `https://translation.googleapis.com/language/translate/v2?key=${process.env.GOOGLE_API_KEY}`
+
+      const unicodeRegex =
+        /[\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}]+$/gu
+      const symbols = message.match(unicodeRegex)?.[0] || '' // 取出表情符號 不翻譯
+      const filteredMessage = message.replace(unicodeRegex, '') // 移除符號
+
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          q: message,
-          source: sourceLang,
-          target: targetLang,
-        }),
+        body: JSON.stringify({ q: filteredMessage, source: sourceLang, target: targetLang }),
       })
 
-      // 檢查 API 請求是否成功
-      if (!response.ok) {
-        return message // 若翻譯失敗，返回原訊息
-      }
+      if (!response.ok) return message // 翻譯失敗則返回原訊息
 
       const data = (await response.json()) as TranslateResponse
-      // 解碼返回的翻譯結果，移除HTML實體符號
-      const translatedText = data.data?.translations?.[0]?.translatedText || message
-      return translatedText.replace(/&#39;/g, "'") // 手動處理常見的實體符號
+      return (data.data?.translations?.[0]?.translatedText || message).replace(/&#39;/g, "'") + symbols
     }
 
     strapi.io = io // 儲存 io 實例，便於後續使用

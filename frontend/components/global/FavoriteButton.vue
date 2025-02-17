@@ -62,6 +62,8 @@ const handleFavorite = async (nowId: string) => {
 
       isLiked.value = !isLiked.value
 
+      emit('refresh')
+
       showToast(toast.title, toast.description)
     } catch (e) {
       console.log(e)

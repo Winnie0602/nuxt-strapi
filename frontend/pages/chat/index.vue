@@ -182,11 +182,13 @@ onUnmounted(() => {
             v-for="(message, index) in messages[nowRoomInfo?.roomId]"
             :key="index"
             class="inline-block"
-            :class="message.socketId === socketId ? 'self-end' : 'self-start'"
+            :class="message.socketId === socketId ||
+                  message.sender === auth.user.username ? 'self-end' : 'self-start'"
           >
             <div
               class="mb-1 flex text-sm"
-              :class="{ 'justify-end': message.socketId === socketId }"
+              :class="{ 'justify-end': message.socketId === socketId ||
+                  message.sender === auth.user.username }"
             >
               <div class="flex space-x-2">
                 <VoiceSpeak
@@ -201,7 +203,12 @@ onUnmounted(() => {
                   :lang="message.targetLang"
                   :index="index"
                 />
-                {{ message.socketId === socketId ? 'You' : message.sender }}
+                {{
+                  message.socketId === socketId ||
+                  message.sender === auth.user.username
+                    ? 'You'
+                    : message.sender
+                }}
               </div>
             </div>
             <div class="rounded border-[1px] border-gray-500 bg-white">

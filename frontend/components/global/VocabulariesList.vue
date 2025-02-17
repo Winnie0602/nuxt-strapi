@@ -17,7 +17,11 @@ const props = withDefaults(
   },
 )
 
-const { data: myFavorites, error } = await useFetch<Favorites>('/api/favorites')
+const {
+  data: myFavorites,
+  error,
+  refresh,
+} = await useFetch<Favorites>('/api/favorites')
 
 if (error.value?.statusCode === 401) {
   console.log('token error')
@@ -151,12 +155,12 @@ const modalVocabulary = ref<Vocabulary>()
                 ? 'bg-red-200 hover:bg-red-200'
                 : 'bg-white'
             "
-            class="border-custom-gray-200 text-custom-gray-900 even:bg-custom-blue/10 h-[59px] border-t-[2px] text-sm"
+            class="border-custom-gray-200 text-custom-gray-900 even:bg-custom-blue/10 border-t-[2px] text-sm"
           >
             <td
               width="30%"
               scope="col"
-              class="mx-5 h-full px-3 text-left font-medium sm:px-5"
+              class="mx-5 h-full px-3 py-4 text-left font-medium sm:px-5"
             >
               <div class="flex items-center">
                 <div
@@ -219,6 +223,7 @@ const modalVocabulary = ref<Vocabulary>()
                   "
                   :document-id="item.documentId"
                   :item="item"
+                  @refresh="refresh()"
                 />
               </div>
             </td>
