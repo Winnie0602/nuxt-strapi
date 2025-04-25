@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
 
   return await $fetch<{ data: Vocabulary[] }>(
-    `${config.strapiBaseUrl}/messages`,
+    `${config.public.strapiBaseUrl}/messages`,
     {
       method: 'GET',
       headers: {

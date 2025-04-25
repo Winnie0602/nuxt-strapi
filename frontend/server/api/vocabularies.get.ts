@@ -10,8 +10,8 @@ export default defineEventHandler(async (event) => {
 
   const url =
     Object.keys(query).length > 0
-      ? `${config.strapiBaseUrl}/vocabularies?pagination[page]=${query.page}&pagination[pageSize]=${query.size}`
-      : `${config.strapiBaseUrl}/vocabularies`
+      ? `${config.public.strapiBaseUrl}/vocabularies?pagination[page]=${query.page}&pagination[pageSize]=${query.size}`
+      : `${config.public.strapiBaseUrl}/vocabularies`
 
   return await $fetch<{ data: Vocabulary[] }>(url, {
     method: 'GET',

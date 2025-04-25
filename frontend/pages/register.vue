@@ -28,41 +28,44 @@ configure({
   }),
 })
 
-// nuxt auth signin
-const { signIn } = useAuth()
-
 const loading = ref(false)
 
-//  一般帳密登入
-const onSubmit: SubmissionHandler = async (values, actions) => {
-  loading.value = true
+//  註冊
+const onSubmit: SubmissionHandler = async (values) => {
+  const config = useRuntimeConfig()
 
-  // https://github.com/sidebase/nuxt-auth/issues/493
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error, url }: any = await signIn('credentials', {
-    identifier: values.email,
-    password: values.password,
-    redirect: false,
-    callbackUrl: '/',
-  })
+  console.log(config.public.strapiBaseUrl)
 
-  loading.value = false
-
-  if (error) {
-    actions.setFieldError('email', '帳號密碼錯誤')
-  } else {
-    console.log(url)
-    return navigateTo(url, { external: true })
+  try {
+    await $fetch(`${config.public.strapiBaseUrl}/auth/local/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: {
+        password: values.password,
+        email: values.email,
+        username: values.username,
+      },
+    })
+    showToast(`註冊成功，請重新登入`, '')
+    navigateTo('/login')
+  } catch (error) {
+    showToast(`${error.data.error.message}`, '')
+    return null
   }
 }
 </script>
 
 <template>
   <div class="flex h-full w-full items-center justify-center">
-    <UiCard title="登入帳號" class="w-[560px] max-w-sm">
+    <UiCard
+      title="註冊"
+      description="請填入註冊必要的資訊"
+      class="w-[560px] max-w-sm"
+    >
       <template #content>
         <UiCardContent class="flex flex-col gap-4">
           <Form class="" @submit="onSubmit">
+            <!-- Email -->
             <Field
               v-slot="{ componentField }"
               name="email"
@@ -81,6 +84,26 @@ const onSubmit: SubmissionHandler = async (values, actions) => {
             <div class="mb-2 ml-1 text-left text-sm text-red-600">
               <ErrorMessage name="email" />
             </div>
+            <!-- Username -->
+            <Field
+              v-slot="{ componentField }"
+              name="username"
+              rules="required|min_value:3"
+              type="text"
+              placeholder="Your Username"
+            >
+              <UiFormItem>
+                <UiInput
+                  type="username"
+                  v-bind="componentField"
+                  placeholder="個人名稱"
+                />
+              </UiFormItem>
+            </Field>
+            <div class="mb-2 ml-1 text-left text-sm text-red-600">
+              <ErrorMessage name="username" />
+            </div>
+            <!-- Password -->
             <Field
               v-slot="{ componentField }"
               name="password"
@@ -106,13 +129,13 @@ const onSubmit: SubmissionHandler = async (values, actions) => {
                 :disabled="loading"
                 class="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-400"
               >
-                登入
+                註冊
               </button>
               <NuxtLink
-                to="/register"
+                to="/login"
                 class="text-right text-sm underline hover:text-red-600"
               >
-                沒有帳號嗎？去註冊！
+                已有帳號嗎？去登入！
               </NuxtLink>
             </div>
           </Form>

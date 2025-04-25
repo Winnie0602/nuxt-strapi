@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig()
   if (session) {
-    await $fetch<Data[]>(`${config.strapiBaseUrl}/favorites`, {
+    await $fetch<Data[]>(`${config.public.strapiBaseUrl}/favorites`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session.user.jwt}`,

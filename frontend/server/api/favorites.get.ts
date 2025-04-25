@@ -8,12 +8,15 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig()
   if (session) {
-    const result = await $fetch<Data[]>(`${config.strapiBaseUrl}/favorites`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${session.user.jwt}`,
+    const result = await $fetch<Data[]>(
+      `${config.public.strapiBaseUrl}/favorites`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${session.user.jwt}`,
+        },
       },
-    })
+    )
 
     return {
       documentId: result.length > 0 ? result[0].documentId : '',

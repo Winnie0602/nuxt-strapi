@@ -1,4 +1,4 @@
-  import { getServerSession } from '#auth'
+import { getServerSession } from '#auth'
 import type { Vocabulary } from '~/types/type'
 
 export default defineEventHandler(async (event) => {
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
   if (session) {
     const result = await $fetch<{ data: Vocabulary }>(
-      `${config.strapiBaseUrl}/vocabularies/${body.documentId}`,
+      `${config.public.strapiBwaseUrl}/vocabularies/${body.documentId}`,
       {
         method: 'GET',
         headers: {

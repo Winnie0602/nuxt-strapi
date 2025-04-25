@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig()
   if (session) {
-    await $fetch(`${config.strapiBaseUrl}/messages`, {
+    await $fetch(`${config.public.strapiBaseUrl}/messages`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session.user.jwt}`,

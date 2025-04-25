@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   if (session) {
     const result = await $fetch<Data[]>(
-      `${config.strapiBaseUrl}/favorites/${body.documentId}`,
+      `${config.public.strapiBaseUrl}/favorites/${body.documentId}`,
       {
         method: 'PUT',
         headers: {
