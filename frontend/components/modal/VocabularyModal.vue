@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Vocabulary } from '~/types/type'
+import verbToMasu from '~/utils/verbToMasu'
 
 defineProps<{
   vocabulary: Vocabulary
@@ -52,6 +53,11 @@ defineProps<{
             中
           </div>
           <div class="text-sm">{{ vocabulary.example_2 }}</div>
+        </div>
+        <div v-if="vocabulary.type === 'verb'">
+          動詞變化：
+          <br />
+          masu: {{ verbToMasu(vocabulary) }}
         </div>
       </div>
     </UCard>

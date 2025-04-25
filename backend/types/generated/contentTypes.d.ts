@@ -441,7 +441,9 @@ export interface ApiVocabularyVocabulary extends Struct.CollectionTypeSchema {
     masu_form: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     translate_ch: Schema.Attribute.String & Schema.Attribute.Required;
-    type: Schema.Attribute.Enumeration<['noun', 'adj', 'verb', 'adv']>;
+    type: Schema.Attribute.Enumeration<
+      ['noun', 'adj', 'verb', 'adv', 'sentense']
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

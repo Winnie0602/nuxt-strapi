@@ -1,4 +1,4 @@
-import { getServerSession } from '#auth'
+  import { getServerSession } from '#auth'
 import type { Vocabulary } from '~/types/type'
 
 export default defineEventHandler(async (event) => {

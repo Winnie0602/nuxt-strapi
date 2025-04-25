@@ -8,7 +8,7 @@ const page = ref(route.query.page ? Number(route.query.page) : 1)
 const { data } = await useFetch('/api/vocabularies', {
   params: {
     page: page,
-    size: 8,
+    size: 30,
   },
   watch: [page],
   transform: (data: {
@@ -29,7 +29,7 @@ const { data } = await useFetch('/api/vocabularies', {
 
     <UPagination
       v-model="page"
-      :page-count="8"
+      :page-count="30"
       class="mt-8"
       :total="data?.pagination.total || 0"
       :to="

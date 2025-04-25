@@ -14,7 +14,13 @@
   "attributes": {
     "type": {
       "type": "enumeration",
-      "enum": ["noun", "adj", "verb", "adv"]
+      "enum": [
+        "noun",
+        "adj",
+        "verb",
+        "adv",
+        "sentense"
+      ]
     },
     "example_1": {
       "type": "string"
