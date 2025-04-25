@@ -36,7 +36,7 @@ export default NuxtAuthHandler({
 
         try {
           const response = await $fetch<ApiLoginResult>(
-            `${config.strapiBaseUrl}/auth/local`,
+            `${config.public.strapiBaseUrl}/auth/local`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
