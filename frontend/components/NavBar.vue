@@ -85,7 +85,7 @@ const menuitems = [
                 <NuxtLink to="/test/spell">拼字測驗</NuxtLink>
               </UiDropdownMenuItem>
               <UiDropdownMenuItem>
-                <NuxtLink to="/test/match">單字測驗(待開發)</NuxtLink>
+                <NuxtLink to="/test/match">單字配對測驗</NuxtLink>
               </UiDropdownMenuItem>
               <UiDropdownMenuItem>
                 <NuxtLink to="/">聽力測驗(待開發)</NuxtLink>
