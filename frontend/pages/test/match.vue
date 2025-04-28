@@ -72,11 +72,7 @@ function tryMatch() {
       selectedRight.value = null
     } else {
       errorFlash.value = true
-      if (remainingLives.value === 0) {
-        showToast(`測驗失敗，請重新測驗`, '')
-        isGameStart.value = false
-        return
-      }
+
       remainingLives.value -= 1
       setTimeout(() => {
         errorFlash.value = false
@@ -92,6 +88,14 @@ const timer = ref(selectTimer.value * 100) //15 * 100 毫秒 = 1500 毫秒
 
 watch(selectTimer, () => {
   timer.value = selectTimer.value * 100
+})
+
+watch(remainingLives, () => {
+  if (remainingLives.value === 0) {
+    showToast(`測驗失敗，請重新測驗`, '')
+    isGameStart.value = false
+    return
+  }
 })
 
 const formattedTime = ref('14:99')
@@ -117,11 +121,23 @@ const formatTime = (time: number) => {
 }
 
 watch(isGameStart, () => {
-  if (!isGameStart.value) return
+  if (!isGameStart.value) {
+    clearInterval(interval)
+    timer.value = selectTimer.value * 100
+    remainingLives.value = 3
+    return
+  }
+
+  clearInterval(interval)
   interval = setInterval(() => {
     updateTimer()
+    if (timer.value === 0) {
+      isGameStart.value = false
+      showToast(`測驗時間結束，請重新測驗`, '')
+      clearInterval(interval)
+    }
     formattedTime.value = formatTime(timer.value)
-  }, 10) // 每 10 毫秒更新一次
+  }, 10)
 })
 
 onUnmounted(() => {
