@@ -52,7 +52,7 @@
             拼字測驗
           </NuxtLink>
           <NuxtLink
-            to="/test/"
+            to="/test/match"
             class="block rounded-md border px-4 py-3 font-mono text-sm hover:bg-gray-100"
           >
             單字測驗(待開發)

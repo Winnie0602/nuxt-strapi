@@ -76,6 +76,12 @@ module.exports = {
           from: { height: 'var(--radix-collapsible-content-height)' },
           to: { height: '0px' },
         },
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '25%': { transform: 'translateX(-5px)' },
+          '50%': { transform: 'translateX(5px)' },
+          '75%': { transform: 'translateX(-5px)' },
+        },
       },
       animation: {
         shine: 'shine 8s ease-in-out infinite',
@@ -87,6 +93,7 @@ module.exports = {
         fadeOut: 'fadeOut 0.2s ease-out',
         'collapse-down': 'collapse-down 0.2s ease-out',
         'collapse-up': 'collapse-up 0.2s ease-out',
+        shake: 'shake 0.3s ease',
       },
       colors: {
         border: 'hsl(var(--border))',

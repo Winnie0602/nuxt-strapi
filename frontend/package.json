@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@internationalized/number": "^3.6.1",
     "@nuxt/eslint": "^0.7.1",
     "@nuxt/fonts": "^0.10.3",
     "@nuxt/icon": "^1.10.0",

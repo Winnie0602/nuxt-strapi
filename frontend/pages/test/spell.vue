@@ -134,13 +134,13 @@ onMounted(() => {
               v-else-if="score >= 60 && score < 80"
               class="text-nowrap text-cyan-600"
             >
-              還有不到一半的題目~_~
+              目前為止還可以唷！
             </span>
             <span
               v-else-if="score >= 80"
               class="text-nowrap font-bold text-red-500"
             >
-              🔥 最後1題啦～
+              🔥 太厲害了吧～叫你第一名
             </span>
           </div>
         </template>
