@@ -6,6 +6,33 @@ This project is a multilingual learning platform combining Japanese vocabulary s
 
 ---
 
+## 語音朗讀（Text-to-Speech）功能注意事項
+
+### <span style="color:red">建議使用 Google Chrome 瀏覽器</span>
+
+本網站的「朗讀單字」與「朗讀訊息」功能是透過瀏覽器內建的 **Web Speech API** 實作，語音品質會根據不同瀏覽器而有所不同：
+
+- **Google Chrome**：支援 Google 高品質語音（如自然的日文女聲），朗讀效果最佳。
+- **其他瀏覽器（Safari / Firefox / Edge）**：多數僅支援系統預設語音，可能出現機械聲或發音不清。
+
+📌 **由於 Web Speech API 無法指定特定語音來源（如 Google 語音），建議使用 Chrome 瀏覽器以獲得最佳體驗。**
+
+---
+
+## 📢 Note on Text-to-Speech (TTS) Feature
+
+### 🔊 <span style="color:red">Recommended: Use Google Chrome for Best Experience</span>
+
+The "read aloud" features on this site (e.g., vocabulary and chat messages) are powered by the browser's built-in **Web Speech API**. Voice quality may vary depending on the browser:
+
+- **Google Chrome**: Uses high-quality voices provided by Google, especially natural-sounding Japanese voices.
+- **Other browsers (Safari / Firefox / Edge)**: Often rely on system voices, which may sound robotic or unclear.
+
+📌 **Since the Web Speech API cannot enforce a specific voice source, we recommend using Chrome for the best experience.**
+
+---
+
+
 ## 線上體驗 | Live Demo
 
 [前端網址 Frontend URL](https://learning-app-frontend-wsdp.onrender.com)
