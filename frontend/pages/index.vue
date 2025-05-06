@@ -5,7 +5,7 @@ definePageMeta({ layout: 'full-screen' })
 <template>
   <div class="flex justify-center">
     <UiContainer
-      class="scrollbar max-h-[calc(100vh-160px)] max-w-[560px] overflow-y-scroll rounded-md bg-white p-8"
+      class="scrollbar max-h-[calc(100vh-160px)] max-w-[600px] overflow-y-scroll rounded-md bg-white p-8"
     >
       <div class="h-full w-full flex-col items-start justify-center rounded-md">
         <div
@@ -19,7 +19,14 @@ definePageMeta({ layout: 'full-screen' })
             {{ text }}
           </div>
         </div>
-        <div class="mt-3 w-full text-center">日文學習網站</div>
+        <div class="my-3 w-full text-center">日文學習網站</div>
+        <div class="text-sm text-red-500">
+          *建議使用 Google Chrome 瀏覽器，以獲得最佳的語音朗讀體驗。
+        </div>
+        <div class="text-sm text-red-500">
+          *For the best Text-to-Speech (TTS) experience, please use Google
+          Chrome.
+        </div>
         <div class="mt-3 space-y-5">
           <div class="space-y-2">
             <div>1. 頁面介紹：</div>
